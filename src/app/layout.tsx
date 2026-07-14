@@ -1,23 +1,17 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
 import "./globals.css";
 
-// Inter oficial (TTFs da IDV), self-hosted via next/font — sem requisição externa.
-const inter = localFont({
-  src: [
-    {
-      path: "../fonts/Inter-Variable.ttf",
-      style: "normal",
-    },
-    {
-      path: "../fonts/Inter-Italic-Variable.ttf",
-      style: "italic",
-    },
-  ],
+// Inter oficial via next/font — self-hosted no build (nenhuma requisição ao
+// Google em runtime). Mesma família da IDV. Os TTFs oficiais também estão em
+// src/fonts/ (referência da IDV); para trocar por next/font/local, basta
+// apontar para eles — feito assim aqui para permitir o deploy por upload.
+const inter = Inter({
+  subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-  weight: "300 800",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
