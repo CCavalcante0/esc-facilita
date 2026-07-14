@@ -1,7 +1,9 @@
+import { Counter } from "./Counter";
+
 /** Mock do ESC System — elemento assinatura do hero B2B. */
 export function MockEscSystem() {
   return (
-    <div>
+    <div className="mock-entra">
       <div
         className="mock"
         role="img"
@@ -17,15 +19,21 @@ export function MockEscSystem() {
         <div className="kpis">
           <div className="kpi">
             <div className="k-lbl">Carteira ativa</div>
-            <div className="k-val">R$ 312 mil</div>
+            <div className="k-val">
+              <Counter value={312} prefix="R$ " suffix=" mil" />
+            </div>
           </div>
           <div className="kpi">
             <div className="k-lbl">A receber (mês)</div>
-            <div className="k-val">R$ 41,8 mil</div>
+            <div className="k-val">
+              <Counter value={41.8} prefix="R$ " suffix=" mil" decimals={1} />
+            </div>
           </div>
           <div className="kpi">
             <div className="k-lbl">Inadimplência</div>
-            <div className="k-val alerta">4,2%</div>
+            <div className="k-val alerta">
+              <Counter value={4.2} suffix="%" decimals={1} />
+            </div>
           </div>
         </div>
         <div className="mock-body">

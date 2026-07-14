@@ -5,6 +5,17 @@ import { Footer } from "@/components/Footer";
 import { Faq } from "@/components/Faq";
 import { MockEscSystem } from "@/components/MockEscSystem";
 import { LeadForm } from "@/components/LeadForm";
+import { HeroPattern } from "@/components/HeroPattern";
+import { Ticker } from "@/components/Ticker";
+
+const SELOS = [
+  "Diagnóstico confidencial",
+  "LC 167/2019",
+  "Abertura da ESC",
+  "Assessoria contábil e jurídica",
+  "ESC System",
+  "Regularizar para crescer",
+];
 
 export const metadata: Metadata = {
   title: "Torne-se uma Empresa Simples de Crédito",
@@ -61,8 +72,9 @@ export default function ParaOperadores() {
 
       {/* HERO */}
       <section className="hero" id="topo">
+        <HeroPattern />
         <div className="wrap hero-grid">
-          <div>
+          <div className="hero-in">
             <span className="eyebrow">
               Para quem opera crédito · Estruturação de ESC
             </span>
@@ -98,9 +110,11 @@ export default function ParaOperadores() {
         </div>
       </section>
 
+      <Ticker itens={SELOS} />
+
       {/* FAIXA DE RECONHECIMENTO */}
       <section className="faixa">
-        <div className="wrap">
+        <div className="wrap reveal">
           <h2>O dinheiro cresceu. A estrutura ficou para trás.</h2>
           <p className="sub-faixa">
             Se a sua operação de crédito se parece com isto, você não precisa de
@@ -161,7 +175,7 @@ export default function ParaOperadores() {
       {/* O QUE É UMA ESC */}
       <section id="o-que-e">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Sem mistério</span>
             <h2 className="titulo">
               O que é — e o que não é — uma Empresa Simples de Crédito
@@ -173,7 +187,7 @@ export default function ParaOperadores() {
             </p>
           </div>
           <div className="esc-grid">
-            <div className="esc-card">
+            <div className="esc-card reveal" data-d="1">
               <h3>
                 <span className="sinal pode">✓</span> O que a ESC pode fazer
               </h3>
@@ -191,7 +205,7 @@ export default function ParaOperadores() {
                 <li>Constituir garantias, como alienação fiduciária e aval</li>
               </ul>
             </div>
-            <div className="esc-card">
+            <div className="esc-card reveal" data-d="2">
               <h3>
                 <span className="sinal nao">✕</span> O que a ESC não pode fazer
               </h3>
@@ -217,7 +231,7 @@ export default function ParaOperadores() {
       {/* MÉTODO */}
       <section id="metodo" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Método</span>
             <h2 className="titulo">Do improviso à estrutura, em quatro etapas</h2>
             <p>
@@ -226,7 +240,7 @@ export default function ParaOperadores() {
               mensal.
             </p>
           </div>
-          <div className="metodo">
+          <div className="metodo reveal" data-d="1">
             <div className="etapa">
               <h3>Diagnóstico da operação</h3>
               <p>
@@ -264,47 +278,47 @@ export default function ParaOperadores() {
       {/* ENTREGAS */}
       <section className="entregas" id="entregas">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Plano de adesão</span>
             <h2 className="titulo">O que você recebe ao entrar</h2>
           </div>
           <div className="ent-grid">
-            <div className="ent">
+            <div className="ent reveal" data-d="1">
               <h3>Abertura da sua ESC</h3>
               <p>
                 Constituição completa da Empresa Simples de Crédito, com
                 orientação sobre limites legais, enquadramento e capital.
               </p>
             </div>
-            <div className="ent">
+            <div className="ent reveal" data-d="2">
               <h3>ESC System</h3>
               <p>
                 Sistema de gestão da carteira: contratos, parcelas, juros,
                 inadimplência, previsão de recebimentos e histórico documentado.
               </p>
             </div>
-            <div className="ent">
+            <div className="ent reveal" data-d="3">
               <h3>Assessoria contábil e tributária</h3>
               <p>
                 Acompanhamento mensal por quem entende operação de crédito —
                 escrituração, obrigações e planejamento tributário.
               </p>
             </div>
-            <div className="ent">
+            <div className="ent reveal" data-d="1">
               <h3>Assessoria jurídica</h3>
               <p>
                 Modelos de contrato, constituição de garantias, orientação em
                 cobrança e suporte para decisões do dia a dia da operação.
               </p>
             </div>
-            <div className="ent">
+            <div className="ent reveal" data-d="2">
               <h3>Mentoria e treinamentos</h3>
               <p>
                 Acompanhamento de quem opera: rotinas, processos, precificação de
                 risco e a transição de operador para empresário.
               </p>
             </div>
-            <div className="ent">
+            <div className="ent reveal" data-d="3">
               <h3>Metodologia de análise de crédito</h3>
               <p>
                 Critérios estruturados de análise — score, documentação,
@@ -319,7 +333,7 @@ export default function ParaOperadores() {
       <section className="objecao">
         <div className="wrap">
           <div className="obj-grid">
-            <div className="obj-card pergunta">
+            <div className="obj-card pergunta reveal" data-d="1">
               <div className="rotulo">A pergunta que trava todo mundo</div>
               <h3>
                 "Se eu regularizar, não vou pagar mais imposto e chamar mais
@@ -331,7 +345,7 @@ export default function ParaOperadores() {
                 como custo e exposição.
               </p>
             </div>
-            <div className="obj-card resposta">
+            <div className="obj-card resposta reveal" data-d="2">
               <div className="rotulo">A resposta honesta</div>
               <h3>
                 A falta de estrutura já chama atenção. A organização reduz
@@ -360,7 +374,7 @@ export default function ParaOperadores() {
             </h2>
           </div>
           <div className="trans-grid">
-            <div className="trans antes">
+            <div className="trans antes reveal" data-d="1">
               <div className="t-rotulo">Hoje — operação no improviso</div>
               <ul>
                 <li>Carteira na planilha e cobrança pelo WhatsApp</li>
@@ -371,7 +385,7 @@ export default function ParaOperadores() {
                 <li>Decisões por intuição, sem dado e sem registro</li>
               </ul>
             </div>
-            <div className="trans depois">
+            <div className="trans depois reveal" data-d="2">
               <div className="t-rotulo">Amanhã — operação estruturada</div>
               <ul>
                 <li>ESC constituída, com enquadramento validado juridicamente</li>
@@ -409,7 +423,7 @@ export default function ParaOperadores() {
 
       {/* CTA FINAL */}
       <section className="cta-final">
-        <div className="wrap cta-box">
+        <div className="wrap cta-box reveal">
           <h2>Sua operação merece deixar de ser improviso.</h2>
           <p>
             Solicite o diagnóstico confidencial. Entendemos a sua realidade,

@@ -1,7 +1,9 @@
+import { Counter } from "./Counter";
+
 /** Mock da Área do Cliente — elemento assinatura do hero B2C. */
 export function MockAreaCliente() {
   return (
-    <div>
+    <div className="mock-entra">
       <div
         className="mock"
         role="img"
@@ -18,7 +20,9 @@ export function MockAreaCliente() {
           <div className="mock-saldo">
             <div>
               <div className="lbl">Saldo devedor</div>
-              <div className="val">R$ 4.280,00</div>
+              <div className="val">
+                <Counter value={4280} prefix="R$ " decimals={2} />
+              </div>
             </div>
             <div style={{ textAlign: "right" }}>
               <div className="lbl">Próximo vencimento</div>

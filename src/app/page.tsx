@@ -4,6 +4,17 @@ import { Footer } from "@/components/Footer";
 import { Faq } from "@/components/Faq";
 import { MockAreaCliente } from "@/components/MockAreaCliente";
 import { LeadForm } from "@/components/LeadForm";
+import { HeroPattern } from "@/components/HeroPattern";
+import { Ticker } from "@/components/Ticker";
+
+const SELOS = [
+  "LC 167/2019",
+  "Capital próprio",
+  "Contrato formalizado",
+  "Crédito sujeito a análise",
+  "São Luís e municípios limítrofes",
+  "Acompanhamento online",
+];
 
 const FAQ = [
   {
@@ -45,8 +56,9 @@ export default function Home() {
 
       {/* HERO */}
       <section className="hero" id="topo">
+        <HeroPattern />
         <div className="wrap hero-grid">
-          <div>
+          <div className="hero-in">
             <span className="eyebrow">Empresa Simples de Crédito · LC 167/2019</span>
             <h1>
               Crédito com estrutura para quem{" "}
@@ -78,10 +90,12 @@ export default function Home() {
         </div>
       </section>
 
+      <Ticker itens={SELOS} />
+
       {/* FAIXA ESC */}
       <section className="faixa">
         <div className="wrap faixa-grid">
-          <div>
+          <div className="reveal">
             <h2>O que é uma Empresa Simples de Crédito?</h2>
             <p>
               A ESC é um modelo criado pela Lei Complementar 167/2019 para{" "}
@@ -93,7 +107,7 @@ export default function Home() {
               instituição, sem a distância de um banco.
             </p>
           </div>
-          <div className="faixa-fatos">
+          <div className="faixa-fatos reveal" data-d="1">
             <div className="fato">
               <span className="f-chave">Regulada</span>
               <span className="f-texto">
@@ -125,7 +139,7 @@ export default function Home() {
       {/* PRODUTOS */}
       <section id="produtos">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Linhas de crédito</span>
             <h2 className="titulo">Três caminhos para capitalizar o seu negócio</h2>
             <p>
@@ -134,7 +148,7 @@ export default function Home() {
             </p>
           </div>
           <div className="prod-grid">
-            <div className="prod">
+            <div className="prod reveal" data-d="1">
               <h3>Empréstimo</h3>
               <p>
                 Capital de giro para organizar o caixa, repor estoque ou investir
@@ -143,7 +157,7 @@ export default function Home() {
               </p>
               <div className="quem-pode">CPF e CNPJ</div>
             </div>
-            <div className="prod">
+            <div className="prod reveal" data-d="2">
               <h3>Financiamento</h3>
               <p>
                 Aquisição de equipamento, veículo de trabalho ou estrutura. Em
@@ -152,7 +166,7 @@ export default function Home() {
               </p>
               <div className="quem-pode">CPF e CNPJ</div>
             </div>
-            <div className="prod">
+            <div className="prod reveal" data-d="3">
               <h3>Antecipação de recebíveis</h3>
               <p>
                 Contratos fechados ou vendas a receber viram capital imediato.
@@ -167,11 +181,11 @@ export default function Home() {
       {/* COMO FUNCIONA */}
       <section id="como-funciona" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Processo</span>
             <h2 className="titulo">Da solicitação ao recurso na conta</h2>
           </div>
-          <div className="fluxo">
+          <div className="fluxo reveal" data-d="1">
             <div className="passo">
               <h3>Solicitação pelo WhatsApp</h3>
               <p>
@@ -201,7 +215,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="docs-nota">
+          <div className="docs-nota reveal" data-d="2">
             <strong>Documentos básicos:</strong> RG, CPF e comprovante de
             residência. Para CNPJ, documentação da empresa. Na comprovação de
             renda, aceitamos mais formas do que o mercado tradicional — veja a
@@ -213,7 +227,7 @@ export default function Home() {
       {/* COMPROVAÇÃO FLEXÍVEL */}
       <section id="comprovacao" style={{ paddingTop: 0 }}>
         <div className="wrap flex-grid">
-          <div>
+          <div className="reveal">
             <span className="eyebrow">Diferencial da análise</span>
             <h2 className="titulo">
               Seu trabalho digital vale como comprovação de renda.
@@ -241,7 +255,7 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          <div className="flex-card">
+          <div className="flex-card reveal" data-d="2">
             <h3>
               O banco não sabe ler quem trabalha com a internet. Nós sabemos.
             </h3>
@@ -260,7 +274,7 @@ export default function Home() {
       {/* ESCOLA FACILITA */}
       <section className="escola" id="escola">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head reveal">
             <span className="eyebrow">Escola Facilita</span>
             <h2 className="titulo">
               Crédito negado não é o fim. É o ponto de partida.
@@ -272,7 +286,7 @@ export default function Home() {
             </p>
           </div>
           <div className="escola-grid">
-            <a className="card-post" href="#escola">
+            <a className="card-post reveal" data-d="1" href="#escola">
               <div className="capa"></div>
               <div className="corpo">
                 <span className="cat">Blog · Gratuito</span>
@@ -283,7 +297,7 @@ export default function Home() {
                 </p>
               </div>
             </a>
-            <a className="card-post" href="#escola">
+            <a className="card-post reveal" data-d="2" href="#escola">
               <div className="capa c2"></div>
               <div className="corpo">
                 <span className="cat">Modelos · Download</span>
@@ -294,7 +308,7 @@ export default function Home() {
                 </p>
               </div>
             </a>
-            <a className="card-post" href="#escola">
+            <a className="card-post reveal" data-d="3" href="#escola">
               <div className="capa c3"></div>
               <div className="corpo">
                 <span className="cat">Curso</span>
@@ -322,26 +336,30 @@ export default function Home() {
       <section id="faq">
         <div className="wrap">
           <div
-            className="sec-head"
+            className="sec-head reveal"
             style={{ textAlign: "center", marginLeft: "auto", marginRight: "auto" }}
           >
             <span className="eyebrow">Dúvidas frequentes</span>
             <h2 className="titulo">Perguntas e respostas diretas</h2>
           </div>
-          <Faq itens={FAQ} />
+          <div className="reveal" data-d="1">
+            <Faq itens={FAQ} />
+          </div>
         </div>
       </section>
 
       {/* FORMULÁRIO DE PRÉ-SOLICITAÇÃO */}
       <section className="lead-sec" id="lead">
         <div className="wrap" style={{ display: "flex", justifyContent: "center" }}>
-          <LeadForm origem="credito" />
+          <div className="reveal" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <LeadForm origem="credito" />
+          </div>
         </div>
       </section>
 
       {/* CTA FINAL */}
       <section className="cta-final">
-        <div className="wrap cta-box">
+        <div className="wrap cta-box reveal">
           <h2>Pronto para estruturar o seu crédito?</h2>
           <p>
             Solicite sua análise pelo WhatsApp. Processo claro, resposta rápida e

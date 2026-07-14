@@ -42,10 +42,75 @@ a { color: inherit; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+/* ===== Movimento =====
+   Tudo em CSS puro, sem JavaScript. Regra de ouro: nenhuma falha pode
+   deixar conteúdo invisível. Por isso o reveal usa scroll-driven animation
+   dentro de @supports — se o navegador não suportar, a regra inteira é
+   ignorada e o conteúdo simplesmente aparece normalmente. */
+
+@keyframes subir { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes revelar { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes mockEntra { from { opacity: 0; transform: translateY(28px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes respira { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Entrada do hero — animação de load comum, roda em qualquer navegador */
+  .hero-in > * { opacity: 0; animation: subir 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+  .hero-in > *:nth-child(1) { animation-delay: 0.05s; }
+  .hero-in > *:nth-child(2) { animation-delay: 0.13s; }
+  .hero-in > *:nth-child(3) { animation-delay: 0.21s; }
+  .hero-in > *:nth-child(4) { animation-delay: 0.29s; }
+  .hero-in > *:nth-child(5) { animation-delay: 0.37s; }
+
+  /* Mock: entrada + respiro contínuo muito sutil (elemento assinatura) */
+  .mock-entra { opacity: 0; animation: mockEntra 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s forwards; }
+  .mock { animation: respira 8s ease-in-out 1.4s infinite; }
+
+  /* Reveal no scroll — só onde houver suporte nativo */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: revelar linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+    .reveal[data-d="1"] { animation-range: entry 9% cover 26%; }
+    .reveal[data-d="2"] { animation-range: entry 13% cover 30%; }
+    .reveal[data-d="3"] { animation-range: entry 17% cover 34%; }
+    .reveal[data-d="4"] { animation-range: entry 21% cover 38%; }
+    .reveal[data-d="5"] { animation-range: entry 25% cover 42%; }
+  }
+}
+
+/* ===== Ticker institucional ===== */
+.ticker { background: var(--profundo); border-top: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; }
+.ticker-viewport { display: flex; width: max-content; animation: correr 38s linear infinite; }
+.ticker:hover .ticker-viewport { animation-play-state: paused; }
+.ticker-track { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; }
+.ticker-track li {
+  display: flex; align-items: center; white-space: nowrap;
+  padding: 15px 0; margin: 0;
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+.ticker-track li::after {
+  content: ""; width: 6px; height: 6px; border-radius: 2px;
+  background: var(--azul); margin: 0 30px; flex-shrink: 0;
+}
+@keyframes correr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-viewport { animation: none; }
+  .ticker { overflow-x: auto; }
+}
+
 /* ===== Header ===== */
-header { position: sticky; top: 0; z-index: 50; background: rgba(247, 248, 243, 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); }
-.nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-.logo-svg { height: 42px; width: auto; display: block; }
+header { position: sticky; top: 0; z-index: 50; background: rgba(247, 248, 243, 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); transition: box-shadow 0.25s ease, background 0.25s ease; }
+header.encolhido { box-shadow: 0 6px 24px rgba(20, 63, 102, 0.07); background: rgba(247, 248, 243, 0.98); }
+.nav { display: flex; align-items: center; justify-content: space-between; height: 72px; transition: height 0.25s ease; }
+header.encolhido .nav { height: 62px; }
+/* Alvo de toque mínimo de 44px (auditoria mobile) */
+.nav > a { display: flex; align-items: center; min-height: 44px; }
+.logo-svg { height: 42px; width: auto; display: block; transition: height 0.25s ease; }
+header.encolhido .logo-svg { height: 36px; }
 .nav-links { display: flex; gap: 26px; align-items: center; list-style: none; }
 .nav-links a { text-decoration: none; font-size: 0.92rem; font-weight: 500; color: var(--cinza); }
 .nav-links a:hover { color: var(--azul); }
@@ -57,10 +122,12 @@ header { position: sticky; top: 0; z-index: 50; background: rgba(247, 248, 243, 
 .btn-borda { border: 1.5px solid var(--azul); color: var(--azul); background: transparent; }
 .btn-borda:hover { background: var(--nevoa); }
 .btn-branco { background: #fff; color: var(--profundo); }
-.menu-btn { display: none; background: none; border: none; font-size: 1.6rem; color: var(--profundo); cursor: pointer; }
+.menu-btn { display: none; background: none; border: none; font-size: 1.6rem; color: var(--profundo); cursor: pointer; width: 44px; height: 44px; align-items: center; justify-content: center; }
 
 /* ===== Hero ===== */
-.hero { padding: 76px 0 92px; background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 55%); }
+.hero { position: relative; overflow: hidden; padding: 76px 0 92px; background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 55%); }
+.hero-pattern { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.hero > .wrap { position: relative; z-index: 1; }
 .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--branco); border: 1px solid var(--linha); color: var(--profundo); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 14px; border-radius: 6px; margin-bottom: 24px; }
 .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--azul); }
@@ -109,7 +176,8 @@ h1 .az { color: var(--azul); }
 .kpis { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--linha); }
 .kpi { padding: 16px 14px; text-align: center; border-right: 1px solid var(--linha); }
 .kpi:last-child { border-right: none; }
-.kpi .k-lbl { font-size: 0.64rem; color: var(--cinza); letter-spacing: 0.05em; text-transform: uppercase; }
+/* min-height alinha os 3 valores mesmo quando o rótulo quebra em 2 linhas (mobile) */
+.kpi .k-lbl { font-size: 0.64rem; color: var(--cinza); letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.3; min-height: 2.6em; display: flex; align-items: center; justify-content: center; }
 .kpi .k-val { font-weight: 800; font-size: 1.05rem; color: var(--profundo); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 2px; }
 .kpi .k-val.alerta { color: var(--atraso); }
 .linha-cart { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--offwhite); font-size: 0.88rem; }
@@ -194,7 +262,8 @@ h2.titulo { font-weight: 800; font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-sp
 
 /* O que é ESC — educacional (B2B) */
 .esc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.esc-card { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 28px 26px; }
+.esc-card { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 28px 26px; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.esc-card:hover { box-shadow: 0 16px 40px rgba(20, 63, 102, 0.1); transform: translateY(-3px); }
 .esc-card h3 { font-weight: 700; font-size: 1.05rem; color: var(--profundo); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
 .esc-card h3 .sinal { width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; flex-shrink: 0; }
 .sinal.pode { background: var(--ok-bg); color: var(--ok); }
@@ -214,7 +283,8 @@ h2.titulo { font-weight: 800; font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-sp
 /* Entregas (B2B) */
 .entregas { background: var(--branco); border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); }
 .ent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.ent { background: var(--offwhite); border: 1px solid var(--linha); border-radius: var(--raio); padding: 28px 26px; border-top: 3px solid var(--azul); }
+.ent { background: var(--offwhite); border: 1px solid var(--linha); border-radius: var(--raio); padding: 28px 26px; border-top: 3px solid var(--azul); transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.ent:hover { box-shadow: 0 16px 40px rgba(20, 63, 102, 0.1); transform: translateY(-3px); }
 .ent h3 { font-weight: 700; font-size: 1.08rem; color: var(--profundo); margin-bottom: 9px; letter-spacing: -0.01em; }
 .ent p { font-size: 0.92rem; color: var(--cinza); }
 

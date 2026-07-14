@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { waLink } from "@/lib/config";
@@ -54,11 +54,19 @@ const NAV: Record<Variant, { logoHref: string; items: NavItem[] }> = {
 
 export function Header({ variant }: { variant: Variant }) {
   const [aberto, setAberto] = useState(false);
+  const [encolhido, setEncolhido] = useState(false);
   const { logoHref, items } = NAV[variant];
   const close = () => setAberto(false);
 
+  useEffect(() => {
+    const onScroll = () => setEncolhido(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header>
+    <header className={encolhido ? "encolhido" : undefined}>
       <div className="wrap nav">
         <Link href={logoHref} aria-label="ESC Facilita — início" onClick={close}>
           <Logo variant="cor" />
