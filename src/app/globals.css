@@ -48,8 +48,10 @@ a { color: inherit; }
    dentro de @supports — se o navegador não suportar, a regra inteira é
    ignorada e o conteúdo simplesmente aparece normalmente. */
 
-@keyframes subir { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
-@keyframes revelar { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes subir { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes revelar { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes desliza { from { transform: translateX(-12px); } to { transform: none; } }
+@keyframes linhaEntra { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
 @keyframes mockEntra { from { opacity: 0; transform: translateY(28px) scale(0.97); } to { opacity: 1; transform: none; } }
 @keyframes respira { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
@@ -386,4 +388,93 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
   .logo-svg { height: 36px; }
   .lead-grid { grid-template-columns: 1fr; }
   .lead-card { padding: 30px 22px; }
+}
+
+/* ===== Enriquecimento de movimento (v2) =====
+   Micro-interações de hover são sempre ativas (hover é opt-in do usuário).
+   Animações contínuas e de entrada ficam sob prefers-reduced-motion. */
+
+/* Sublinhado dos links do menu */
+.nav-links a:not(.btn) { position: relative; }
+.nav-links a:not(.btn)::after {
+  content: ""; position: absolute; left: 0; bottom: -4px; height: 2px; width: 100%;
+  background: var(--azul); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.22s ease;
+}
+.nav-links a:not(.btn):hover::after { transform: scaleX(1); }
+
+/* Botões: sombra no hover + leve press ao clicar */
+.btn { transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.2s ease; }
+.btn-azul:hover, .btn-profundo:hover, .btn-branco:hover, .btn-borda:hover {
+  box-shadow: 0 12px 28px rgba(20, 63, 102, 0.18);
+}
+.btn:active { transform: translateY(0) scale(0.98); }
+
+/* Cards da Escola ganham hover (antes só tinham sombra) */
+.card-post { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.card-post:hover { transform: translateY(-4px); }
+.card-post .capa { transition: height 0.2s ease; }
+.card-post:hover .capa { height: 12px; }
+
+/* Mock responde ao hover */
+.mock { transition: box-shadow 0.3s ease; }
+.mock:hover { box-shadow: 0 30px 70px rgba(20, 63, 102, 0.22); }
+
+/* FAQ: abertura suave onde o navegador suportar (senão, abre instantâneo) */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+  details::details-content {
+    block-size: 0; overflow: hidden;
+    transition: block-size 0.3s ease, content-visibility 0.3s allow-discrete;
+  }
+  details[open]::details-content { block-size: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Fundo do hero: deriva lenta (contido pelo overflow:hidden do hero) */
+  .hero-pattern { animation: deriva 26s ease-in-out infinite alternate; will-change: transform; }
+  @keyframes deriva {
+    from { transform: translate3d(0, 0, 0) scale(1.02); }
+    to   { transform: translate3d(-2.5%, 1.5%, 0) scale(1.06); }
+  }
+
+  /* Ponto do eyebrow pulsa devagar */
+  .eyebrow::before { animation: pulso 2.8s ease-in-out infinite; }
+  @keyframes pulso { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.75); } }
+
+  /* Anel decorativo do card de comprovação respira */
+  .flex-card::after { animation: anel 9s ease-in-out infinite; }
+  @keyframes anel { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.7; } }
+
+  /* Tag "em atraso" do mock chama atenção discretamente */
+  .mock .tag-atraso { animation: alerta 2.6s ease-in-out infinite; }
+  @keyframes alerta { 0%, 100% { box-shadow: 0 0 0 0 rgba(178, 58, 58, 0); } 50% { box-shadow: 0 0 0 4px rgba(178, 58, 58, 0.14); } }
+
+  /* Linhas do mock entram escalonadas depois do card assentar */
+  .mock-entra .kpis .kpi,
+  .mock-entra .mock-body > * { opacity: 0; animation: linhaEntra 0.5s ease forwards; }
+  .mock-entra .kpis .kpi:nth-child(1) { animation-delay: 0.55s; }
+  .mock-entra .kpis .kpi:nth-child(2) { animation-delay: 0.66s; }
+  .mock-entra .kpis .kpi:nth-child(3) { animation-delay: 0.77s; }
+  .mock-entra .mock-body > *:nth-child(1) { animation-delay: 0.60s; }
+  .mock-entra .mock-body > *:nth-child(2) { animation-delay: 0.72s; }
+  .mock-entra .mock-body > *:nth-child(3) { animation-delay: 0.84s; }
+  .mock-entra .mock-body > *:nth-child(4) { animation-delay: 0.96s; }
+
+  /* Stagger nas listas que estavam 100% estáticas.
+     Só transform (sem opacity) para nunca esconder conteúdo, mesmo aninhado. */
+  @supports (animation-timeline: view()) {
+    .dores .dor,
+    .flex-lista li,
+    .trans ul li {
+      animation: desliza linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 18%;
+    }
+    .dores .dor:nth-child(2), .flex-lista li:nth-child(2), .trans ul li:nth-child(2) { animation-range: entry 3% cover 21%; }
+    .dores .dor:nth-child(3), .flex-lista li:nth-child(3), .trans ul li:nth-child(3) { animation-range: entry 6% cover 24%; }
+    .dores .dor:nth-child(4), .flex-lista li:nth-child(4), .trans ul li:nth-child(4) { animation-range: entry 9% cover 27%; }
+    .dores .dor:nth-child(5), .flex-lista li:nth-child(5), .trans ul li:nth-child(5) { animation-range: entry 12% cover 30%; }
+    .dores .dor:nth-child(6), .trans ul li:nth-child(6) { animation-range: entry 15% cover 33%; }
+  }
 }
