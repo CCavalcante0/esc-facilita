@@ -24,6 +24,9 @@
   --atraso-bg: #fbe7e7;
   --raio: 12px;
   --fonte: var(--font-inter), sans-serif;
+  /* Easing-assinatura (inspirado na referência): entra rápido, assenta devagar */
+  --ease-brand: cubic-bezier(0.65, 0.05, 0, 1);
+  --dur-brand: 0.75s;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,24 +51,28 @@ a { color: inherit; }
    dentro de @supports — se o navegador não suportar, a regra inteira é
    ignorada e o conteúdo simplesmente aparece normalmente. */
 
-@keyframes subir { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: none; } }
-@keyframes revelar { from { opacity: 0; transform: translateY(22px) scale(0.985); } to { opacity: 1; transform: none; } }
-@keyframes desliza { from { transform: translateX(-12px); } to { transform: none; } }
-@keyframes linhaEntra { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes subir { from { opacity: 0; transform: translateY(34px) scale(0.965); } to { opacity: 1; transform: none; } }
+@keyframes revelar { from { opacity: 0; transform: translateY(34px) scale(0.965); } to { opacity: 1; transform: none; } }
+/* Wipe: o conteúdo "sobe por trás de uma máscara" — bem mais marcante que fade */
+@keyframes wipeUp { from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(20px); } to { opacity: 1; clip-path: inset(0 0 0 0); transform: none; } }
+@keyframes desliza { from { transform: translateX(-14px); } to { transform: none; } }
+@keyframes linhaEntra { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
 @keyframes mockEntra { from { opacity: 0; transform: translateY(28px) scale(0.97); } to { opacity: 1; transform: none; } }
 @keyframes respira { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Entrada do hero — animação de load comum, roda em qualquer navegador */
-  .hero-in > * { opacity: 0; animation: subir 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+  /* Entrada do hero — animação de load, roda em qualquer navegador */
+  .hero-in > * { opacity: 0; animation: subir var(--dur-brand) var(--ease-brand) forwards; }
   .hero-in > *:nth-child(1) { animation-delay: 0.05s; }
-  .hero-in > *:nth-child(2) { animation-delay: 0.13s; }
-  .hero-in > *:nth-child(3) { animation-delay: 0.21s; }
-  .hero-in > *:nth-child(4) { animation-delay: 0.29s; }
-  .hero-in > *:nth-child(5) { animation-delay: 0.37s; }
+  .hero-in > *:nth-child(2) { animation-delay: 0.15s; }
+  .hero-in > *:nth-child(3) { animation-delay: 0.25s; }
+  .hero-in > *:nth-child(4) { animation-delay: 0.35s; }
+  .hero-in > *:nth-child(5) { animation-delay: 0.45s; }
+  /* O título do hero entra com wipe (mais marcante) */
+  .hero-in > h1 { animation: wipeUp 0.95s var(--ease-brand) 0.15s forwards; }
 
   /* Mock: entrada + respiro contínuo muito sutil (elemento assinatura) */
-  .mock-entra { opacity: 0; animation: mockEntra 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s forwards; }
+  .mock-entra { opacity: 0; animation: mockEntra 0.95s var(--ease-brand) 0.35s forwards; }
   .mock { animation: respira 8s ease-in-out 1.4s infinite; }
 
   /* Reveal no scroll — só onde houver suporte nativo */
@@ -80,6 +87,9 @@ a { color: inherit; }
     .reveal[data-d="3"] { animation-range: entry 17% cover 34%; }
     .reveal[data-d="4"] { animation-range: entry 21% cover 38%; }
     .reveal[data-d="5"] { animation-range: entry 25% cover 42%; }
+
+    /* Títulos de seção entram com wipe no scroll (mais ousado) */
+    .sec-head .titulo, .faixa h2 { animation: wipeUp linear both; animation-timeline: view(); animation-range: entry 4% cover 24%; }
   }
 }
 
@@ -478,3 +488,20 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
     .dores .dor:nth-child(6), .trans ul li:nth-child(6) { animation-range: entry 15% cover 33%; }
   }
 }
+
+/* ===== Transição de página (troca de rota / ↔ /para-operadores) =====
+   Dois painéis da IDV cobrem a tela e revelam de baixo para cima ao entrar
+   na nova rota. Remontado pelo template.tsx a cada navegação. */
+.page-transition { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
+.pt-panel { position: absolute; inset: 0; transform-origin: bottom; will-change: transform; }
+.pt-1 { background: var(--profundo); }
+.pt-2 { background: var(--azul); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pt-panel { animation: ptReveal 0.72s var(--ease-brand) both; }
+  .pt-2 { animation-delay: 0.09s; }
+  @keyframes ptReveal { 0% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+}
+/* Sem JS/animação (ou movimento reduzido): overlay não aparece, nada bloqueia a tela */
+@media (prefers-reduced-motion: reduce) { .page-transition { display: none; } }
+.pt-panel { transform: scaleY(0); }
