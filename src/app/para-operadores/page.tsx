@@ -70,6 +70,7 @@ export default function ParaOperadores() {
     <div className="page-b2b">
       <Header variant="b2b" />
 
+      <main>
       {/* HERO */}
       <section className="hero" id="topo">
         <HeroPattern />
@@ -333,7 +334,7 @@ export default function ParaOperadores() {
       <section className="objecao">
         <div className="wrap">
           <div className="obj-grid">
-            <div className="obj-card pergunta reveal" data-d="1">
+            <div className="obj-card pergunta reveal-esq">
               <div className="rotulo">A pergunta que trava todo mundo</div>
               <h3>
                 "Se eu regularizar, não vou pagar mais imposto e chamar mais
@@ -345,7 +346,7 @@ export default function ParaOperadores() {
                 como custo e exposição.
               </p>
             </div>
-            <div className="obj-card resposta reveal" data-d="2">
+            <div className="obj-card resposta reveal-dir">
               <div className="rotulo">A resposta honesta</div>
               <h3>
                 A falta de estrutura já chama atenção. A organização reduz
@@ -374,7 +375,7 @@ export default function ParaOperadores() {
             </h2>
           </div>
           <div className="trans-grid">
-            <div className="trans antes reveal" data-d="1">
+            <div className="trans antes reveal-esq">
               <div className="t-rotulo">Hoje — operação no improviso</div>
               <ul>
                 <li>Carteira na planilha e cobrança pelo WhatsApp</li>
@@ -385,7 +386,7 @@ export default function ParaOperadores() {
                 <li>Decisões por intuição, sem dado e sem registro</li>
               </ul>
             </div>
-            <div className="trans depois reveal" data-d="2">
+            <div className="trans depois reveal-dir">
               <div className="t-rotulo">Amanhã — operação estruturada</div>
               <ul>
                 <li>ESC constituída, com enquadramento validado juridicamente</li>
@@ -434,6 +435,7 @@ export default function ParaOperadores() {
           </Link>
         </div>
       </section>
+      </main>
 
       <Footer variant="b2b" />
     </div>

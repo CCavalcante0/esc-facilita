@@ -47,7 +47,7 @@ export function Footer({ variant }: { variant: Variant }) {
             <p className="foot-tag">Regularizar para crescer.</p>
           </div>
           <div>
-            <h4>Navegação</h4>
+            <h3>Navegação</h3>
             <ul>
               {nav.map((item) => (
                 <li key={item.label}>
@@ -57,7 +57,7 @@ export function Footer({ variant }: { variant: Variant }) {
             </ul>
           </div>
           <div>
-            <h4>Contato</h4>
+            <h3>Contato</h3>
             <ul>
               <li>
                 <a href={waLink()} target="_blank" rel="noopener">

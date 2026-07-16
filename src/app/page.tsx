@@ -54,6 +54,7 @@ export default function Home() {
     <div className="page-b2c">
       <Header variant="b2c" />
 
+      <main>
       {/* HERO */}
       <section className="hero" id="topo">
         <HeroPattern />
@@ -107,7 +108,7 @@ export default function Home() {
               instituição, sem a distância de um banco.
             </p>
           </div>
-          <div className="faixa-fatos reveal" data-d="1">
+          <div className="faixa-fatos reveal-dir">
             <div className="fato">
               <span className="f-chave">Regulada</span>
               <span className="f-texto">
@@ -227,7 +228,7 @@ export default function Home() {
       {/* COMPROVAÇÃO FLEXÍVEL */}
       <section id="comprovacao" style={{ paddingTop: 0 }}>
         <div className="wrap flex-grid">
-          <div className="reveal">
+          <div className="reveal-esq">
             <span className="eyebrow">Diferencial da análise</span>
             <h2 className="titulo">
               Seu trabalho digital vale como comprovação de renda.
@@ -255,7 +256,7 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          <div className="flex-card reveal" data-d="2">
+          <div className="flex-card reveal-dir">
             <h3>
               O banco não sabe ler quem trabalha com a internet. Nós sabemos.
             </h3>
@@ -370,6 +371,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      </main>
 
       <Footer variant="b2c" />
     </div>

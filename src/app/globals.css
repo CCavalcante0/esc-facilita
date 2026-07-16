@@ -16,7 +16,7 @@
   --preto: #1d1d1b;
   --cinza: #54606b;
   --linha: #dce4ec;
-  --ok: #1b7f4d;
+  --ok: #146b3e; /* escurecido de #1b7f4d p/ passar WCAG AA (4.5:1) na tag pequena; cor de status é "fora do manual" */
   --ok-bg: #e3f3ea;
   --pend: #8f6412;
   --pend-bg: #fbf1dc;
@@ -51,45 +51,50 @@ a { color: inherit; }
    dentro de @supports — se o navegador não suportar, a regra inteira é
    ignorada e o conteúdo simplesmente aparece normalmente. */
 
-@keyframes subir { from { opacity: 0; transform: translateY(34px) scale(0.965); } to { opacity: 1; transform: none; } }
-@keyframes revelar { from { opacity: 0; transform: translateY(34px) scale(0.965); } to { opacity: 1; transform: none; } }
-/* Wipe: o conteúdo "sobe por trás de uma máscara" — bem mais marcante que fade */
-@keyframes wipeUp { from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(20px); } to { opacity: 1; clip-path: inset(0 0 0 0); transform: none; } }
-@keyframes desliza { from { transform: translateX(-14px); } to { transform: none; } }
-@keyframes linhaEntra { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
-@keyframes mockEntra { from { opacity: 0; transform: translateY(28px) scale(0.97); } to { opacity: 1; transform: none; } }
-@keyframes respira { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+/* Todas as keyframes usam só transform/opacity → compostas na GPU (60fps no
+   Moto G) e sem custo de repaint. Variedade vem das DIREÇÕES, não de props caras. */
+@keyframes subir     { from { opacity: 0; transform: translateY(34px) scale(0.965); } to { opacity: 1; transform: none; } }
+@keyframes revelar   { from { opacity: 0; transform: translateY(40px) scale(0.955); } to { opacity: 1; transform: none; } }
+@keyframes revEsq    { from { opacity: 0; transform: translateX(-52px); }            to { opacity: 1; transform: none; } }
+@keyframes revDir    { from { opacity: 0; transform: translateX(52px); }             to { opacity: 1; transform: none; } }
+@keyframes revZoom   { from { opacity: 0; transform: scale(0.9); }                   to { opacity: 1; transform: none; } }
+@keyframes revGira   { from { opacity: 0; transform: translateY(40px) rotate(-2deg) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes desliza   { from { transform: translateX(-14px); }                        to { transform: none; } }
+@keyframes linhaEntra{ from { opacity: 0; transform: translateX(-12px); }            to { opacity: 1; transform: none; } }
+@keyframes mockEntra { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes respira   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes parallax  { from { transform: translateY(-3%); } to { transform: translateY(3%); } }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Entrada do hero — animação de load, roda em qualquer navegador */
-  .hero-in > * { opacity: 0; animation: subir var(--dur-brand) var(--ease-brand) forwards; }
-  .hero-in > *:nth-child(1) { animation-delay: 0.05s; }
-  .hero-in > *:nth-child(2) { animation-delay: 0.15s; }
-  .hero-in > *:nth-child(3) { animation-delay: 0.25s; }
-  .hero-in > *:nth-child(4) { animation-delay: 0.35s; }
-  .hero-in > *:nth-child(5) { animation-delay: 0.45s; }
-  /* O título do hero entra com wipe (mais marcante) */
-  .hero-in > h1 { animation: wipeUp 0.95s var(--ease-brand) 0.15s forwards; }
+  /* ===== ACIMA DA DOBRA (hero) — leve, para não atrasar LCP/Speed Index =====
+     O TÍTULO e o MOCK pintam na hora (não entram na animação) → elementos de LCP
+     ficam visíveis imediatamente. Só os elementos pequenos ganham entrada rápida. */
+  .hero-in > *:not(h1) { opacity: 0; animation: subir 0.5s var(--ease-brand) forwards; }
+  .hero-in > *:nth-child(1) { animation-delay: 0.03s; }
+  .hero-in > *:nth-child(3) { animation-delay: 0.10s; }
+  .hero-in > *:nth-child(4) { animation-delay: 0.16s; }
+  .hero-in > *:nth-child(5) { animation-delay: 0.22s; }
 
-  /* Mock: entrada + respiro contínuo muito sutil (elemento assinatura) */
-  .mock-entra { opacity: 0; animation: mockEntra 0.95s var(--ease-brand) 0.35s forwards; }
+  /* Mock: só respiro contínuo (sem gate de opacidade que atrase o paint) */
   .mock { animation: respira 8s ease-in-out 1.4s infinite; }
 
-  /* Reveal no scroll — só onde houver suporte nativo */
+  /* ===== ABAIXO DA DOBRA — aqui a gente é ousado (não afeta LCP/SI) ===== */
   @supports (animation-timeline: view()) {
-    .reveal {
-      animation: revelar linear both;
-      animation-timeline: view();
-      animation-range: entry 5% cover 22%;
-    }
+    .reveal      { animation: revelar linear both; animation-timeline: view(); animation-range: entry 5% cover 22%; }
+    .reveal-esq  { animation: revEsq  linear both; animation-timeline: view(); animation-range: entry 5% cover 26%; }
+    .reveal-dir  { animation: revDir  linear both; animation-timeline: view(); animation-range: entry 5% cover 26%; }
+    .reveal-zoom { animation: revZoom linear both; animation-timeline: view(); animation-range: entry 6% cover 26%; }
     .reveal[data-d="1"] { animation-range: entry 9% cover 26%; }
     .reveal[data-d="2"] { animation-range: entry 13% cover 30%; }
     .reveal[data-d="3"] { animation-range: entry 17% cover 34%; }
     .reveal[data-d="4"] { animation-range: entry 21% cover 38%; }
     .reveal[data-d="5"] { animation-range: entry 25% cover 42%; }
 
-    /* Títulos de seção entram com wipe no scroll (mais ousado) */
-    .sec-head .titulo, .faixa h2 { animation: wipeUp linear both; animation-timeline: view(); animation-range: entry 4% cover 24%; }
+    /* Títulos de seção: entram girando levemente (composto) — estilo próprio */
+    .sec-head .titulo, .faixa h2 { animation: revGira linear both; animation-timeline: view(); animation-range: entry 4% cover 24%; }
+
+    /* Parallax composto: o padrão do hero e o mock deslizam com o scroll */
+    .hero-pattern { animation: parallax linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
   }
 }
 
@@ -125,6 +130,8 @@ header.encolhido .nav { height: 62px; }
 header.encolhido .logo-svg { height: 36px; }
 .nav-links { display: flex; gap: 26px; align-items: center; list-style: none; }
 .nav-links a { text-decoration: none; font-size: 0.92rem; font-weight: 500; color: var(--cinza); }
+/* Alvo de toque de 44px nos links de texto do menu (WCAG target-size), sem afetar os botões */
+.nav-links a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; }
 .nav-links a:hover { color: var(--azul); }
 .btn { display: inline-block; font-weight: 600; text-decoration: none; border-radius: 8px; padding: 13px 26px; font-size: 0.95rem; transition: background 0.15s ease, transform 0.15s ease; border: none; cursor: pointer; font-family: var(--fonte); }
 .btn:hover { transform: translateY(-1px); }
@@ -199,7 +206,7 @@ h1 .az { color: var(--azul); }
 .linha-cart .c-val { font-variant-numeric: tabular-nums; font-weight: 600; margin-right: 12px; }
 
 /* ===== Faixa (fundo profundo) ===== */
-.faixa { background: var(--profundo); color: #fff; padding: 68px 0; }
+.faixa { background: var(--profundo); color: #fff; padding: 68px 0; overflow-x: clip; }
 .page-b2c .faixa h2 { font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.15; }
 .page-b2b .faixa h2 { font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.15; max-width: 16em; }
 .page-b2c .faixa p { color: rgba(255, 255, 255, 0.78); margin-top: 16px; font-size: 1rem; }
@@ -222,7 +229,9 @@ h1 .az { color: var(--azul); }
 .faixa-fecho span { border-bottom: 2px solid var(--azul); }
 
 /* ===== Seções gerais ===== */
-section { padding: 84px 0; }
+/* overflow-x:clip contém os reveals direcionais (translateX) sem criar scroll
+   horizontal no mobile; não vira contêiner de rolagem (header sticky intacto) */
+section { padding: 84px 0; overflow-x: clip; }
 .page-b2c .sec-head { max-width: 660px; margin-bottom: 48px; }
 .page-b2b .sec-head { max-width: 680px; margin-bottom: 48px; }
 h2.titulo { font-weight: 800; font-size: clamp(1.7rem, 3.4vw, 2.4rem); letter-spacing: -0.025em; color: var(--profundo); line-height: 1.12; }
@@ -368,12 +377,15 @@ details .resp { padding: 0 24px 22px; font-size: 0.93rem; color: var(--cinza); }
 footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding: 56px 0 32px; font-size: 0.88rem; }
 .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
 .foot-logo { height: 52px; width: auto; }
-.foot-grid h4 { color: #fff; font-weight: 700; margin-bottom: 14px; font-size: 0.95rem; letter-spacing: 0.02em; }
+.foot-grid h3 { color: #fff; font-weight: 700; margin-bottom: 14px; font-size: 0.95rem; letter-spacing: 0.02em; }
 .foot-grid ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+/* Alvo de toque nos links do rodapé (WCAG target-size ≥ 24px) */
+.foot-grid ul a { text-decoration: none; display: inline-flex; align-items: center; min-height: 28px; }
 .foot-grid a { text-decoration: none; }
 .foot-grid a:hover { color: #fff; }
 .foot-tag { margin-top: 16px; font-weight: 600; color: #fff; font-size: 0.92rem; }
-.foot-legal { border-top: 1px solid rgba(255, 255, 255, 0.14); padding-top: 24px; font-size: 0.78rem; color: rgba(255, 255, 255, 0.5); line-height: 1.7; }
+/* Contraste: 0.5 reprovava no WCAG AA sobre o azul profundo; 0.72 passa (~6:1) */
+.foot-legal { border-top: 1px solid rgba(255, 255, 255, 0.14); padding-top: 24px; font-size: 0.78rem; color: rgba(255, 255, 255, 0.72); line-height: 1.7; }
 
 /* ===== Mobile ===== */
 @media (max-width: 900px) {
@@ -441,24 +453,25 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Fundo do hero: deriva lenta (contido pelo overflow:hidden do hero) */
-  .hero-pattern { animation: deriva 26s ease-in-out infinite alternate; will-change: transform; }
-  @keyframes deriva {
-    from { transform: translate3d(0, 0, 0) scale(1.02); }
-    to   { transform: translate3d(-2.5%, 1.5%, 0) scale(1.06); }
-  }
+  /* (o padrão do hero agora faz parallax no scroll — ver bloco de movimento) */
 
-  /* Ponto do eyebrow pulsa devagar */
+  /* Ponto do eyebrow pulsa devagar (transform+opacity → composto) */
   .eyebrow::before { animation: pulso 2.8s ease-in-out infinite; }
   @keyframes pulso { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.75); } }
 
-  /* Anel decorativo do card de comprovação respira */
+  /* Anel decorativo do card de comprovação respira (transform+opacity) */
   .flex-card::after { animation: anel 9s ease-in-out infinite; }
   @keyframes anel { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.7; } }
 
-  /* Tag "em atraso" do mock chama atenção discretamente */
-  .mock .tag-atraso { animation: alerta 2.6s ease-in-out infinite; }
-  @keyframes alerta { 0%, 100% { box-shadow: 0 0 0 0 rgba(178, 58, 58, 0); } 50% { box-shadow: 0 0 0 4px rgba(178, 58, 58, 0.14); } }
+  /* Tag "em atraso" do mock: anel pulsante COMPOSTO (transform+opacity num
+     ::after), no lugar de animar box-shadow (que forçava repaint) */
+  .mock .tag-atraso { position: relative; }
+  .mock .tag-atraso::after {
+    content: ""; position: absolute; inset: 0; border-radius: 6px;
+    border: 2px solid var(--atraso); opacity: 0; pointer-events: none;
+    animation: anelAlerta 2.6s ease-out infinite;
+  }
+  @keyframes anelAlerta { 0% { opacity: 0.5; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(1.35); } }
 
   /* Linhas do mock entram escalonadas depois do card assentar */
   .mock-entra .kpis .kpi,
