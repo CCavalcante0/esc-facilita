@@ -25,10 +25,10 @@ const DADOS: Record<
     descricao:
       "Estruturação de Empresas Simples de Crédito: abertura, sistema, assessoria contínua e mentoria para quem opera crédito.",
     nav: [
-      { href: "/", label: "Quero crédito" },
       { href: "#o-que-e", label: "O que é uma ESC" },
       { href: "#metodo", label: "Método" },
       { href: "#entregas", label: "Plano de adesão" },
+      { href: "/", label: "Quero crédito" },
     ],
     legal:
       "ESC FACILITA BRASIL LTDA · CNPJ 45.617.869/0001-18 · Empresa Simples de Crédito (ESC) nos termos da Lei Complementar nº 167/2019. Serviços de consultoria, tecnologia e assessoria para estruturação empresarial. A regularização organiza e reduz exposição, mas não elimina obrigações legais. Condições e escopo definidos em contrato após diagnóstico.",

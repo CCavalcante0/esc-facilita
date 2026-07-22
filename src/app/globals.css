@@ -133,6 +133,10 @@ header.encolhido .logo-svg { height: 36px; }
 /* Alvo de toque de 44px nos links de texto do menu (WCAG target-size), sem afetar os botões */
 .nav-links a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; }
 .nav-links a:hover { color: var(--azul); }
+/* Botões dentro do menu mantêm as próprias cores: sem isso, `.nav-links a`
+   (mais específico que `.btn-azul`) pintava o texto de cinza sobre azul */
+.nav-links a.btn-azul, .nav-links a.btn-azul:hover { color: #fff; }
+.nav-links a.btn-borda, .nav-links a.btn-borda:hover { color: var(--azul); }
 .btn { display: inline-block; font-weight: 600; text-decoration: none; border-radius: 8px; padding: 13px 26px; font-size: 0.95rem; transition: background 0.15s ease, transform 0.15s ease; border: none; cursor: pointer; font-family: var(--fonte); }
 .btn:hover { transform: translateY(-1px); }
 .btn-azul { background: var(--azul); color: #fff; }

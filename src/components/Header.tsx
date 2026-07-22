@@ -36,11 +36,12 @@ const NAV: Record<Variant, { logoHref: string; items: NavItem[] }> = {
   b2b: {
     logoHref: "/",
     items: [
-      { href: "/", label: "Quero crédito" },
       { href: "#o-que-e", label: "O que é uma ESC" },
       { href: "#metodo", label: "Método" },
       { href: "#entregas", label: "O que entregamos" },
       { href: "#faq", label: "Dúvidas" },
+      // Link cruzado sempre por último, como no menu B2C ("Torne-se uma ESC")
+      { href: "/", label: "Quero crédito" },
       {
         href: waLink(),
         label: "Solicitar diagnóstico",
