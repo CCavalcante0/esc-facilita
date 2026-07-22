@@ -5,6 +5,7 @@ import { Faq } from "@/components/Faq";
 import { MockAreaCliente } from "@/components/MockAreaCliente";
 import { LeadForm } from "@/components/LeadForm";
 import { HeroPattern } from "@/components/HeroPattern";
+import { HeroGLLoader } from "@/components/HeroGLLoader";
 import { Ticker } from "@/components/Ticker";
 
 const SELOS = [
@@ -57,6 +58,7 @@ export default function Home() {
       <main>
       {/* HERO */}
       <section className="hero" id="topo">
+        <HeroGLLoader />
         <HeroPattern />
         <div className="wrap hero-grid">
           <div className="hero-in">

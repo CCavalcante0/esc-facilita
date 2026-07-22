@@ -1,6 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { rateLimitOk } from "@/lib/rate-limit";
 
 export type LeadOrigem = "credito" | "diagnostico";
 
@@ -10,6 +12,8 @@ export interface LeadInput {
   valor: string;
   finalidade: string;
   origem: LeadOrigem;
+  /** Honeypot: campo invisível para humanos; bot que preencher é descartado. */
+  website?: string;
 }
 
 export type SubmitLeadResult =
@@ -24,10 +28,17 @@ function parseValor(valor: string): number | null {
 }
 
 export async function submitLead(input: LeadInput): Promise<SubmitLeadResult> {
-  const nome = (input.nome ?? "").trim();
-  const whatsappDigits = (input.whatsapp ?? "").replace(/\D/g, "");
-  const finalidade = (input.finalidade ?? "").trim();
-  const valor = parseValor(input.valor ?? "");
+  // Honeypot preenchido = bot. Responde sucesso sem gravar, para o bot
+  // não aprender que foi detectado.
+  if (input.website) {
+    return { ok: true };
+  }
+
+  // Caps de tamanho antes de qualquer processamento: payload gigante é abuso.
+  const nome = (input.nome ?? "").slice(0, 120).trim();
+  const whatsappDigits = (input.whatsapp ?? "").slice(0, 32).replace(/\D/g, "");
+  const finalidade = (input.finalidade ?? "").slice(0, 300).trim();
+  const valor = parseValor((input.valor ?? "").slice(0, 32));
 
   if (nome.length < 3) {
     return { ok: false, error: "Informe seu nome completo." };
@@ -37,6 +48,18 @@ export async function submitLead(input: LeadInput): Promise<SubmitLeadResult> {
   }
   if (input.origem !== "credito" && input.origem !== "diagnostico") {
     return { ok: false, error: "Origem inválida." };
+  }
+
+  const h = await headers();
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    h.get("x-real-ip") ||
+    "unknown";
+  if (!rateLimitOk(ip)) {
+    return {
+      ok: false,
+      error: "Muitas solicitações seguidas. Aguarde alguns minutos e tente de novo.",
+    };
   }
 
   const supabase = createServerSupabase();

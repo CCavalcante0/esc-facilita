@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { SITE_NAME, SITE_URL } from "@/lib/config";
+import { CONTACT_EMAIL, SITE_NAME, SITE_URL, WHATSAPP_NUMBER } from "@/lib/config";
 import "./globals.css";
 
 // Inter oficial via next/font — self-hosted no build (nenhuma requisição ao
@@ -35,6 +35,28 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+// Dados estruturados (schema.org) — Google/IA entendem quem é a empresa.
+// Tudo vem do config.ts: a troca de WhatsApp/domínio no go-live já atualiza aqui.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  name: SITE_NAME,
+  legalName: "ESC FACILITA BRASIL LTDA",
+  taxID: "45.617.869/0001-18",
+  url: SITE_URL,
+  email: CONTACT_EMAIL,
+  telephone: `+${WHATSAPP_NUMBER}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "São Luís",
+    addressRegion: "MA",
+    addressCountry: "BR",
+  },
+  areaServed: "São Luís e municípios limítrofes",
+  description:
+    "Empresa Simples de Crédito (LC 167/2019): empréstimo, financiamento e antecipação de recebíveis com capital próprio. Crédito sujeito a análise.",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -42,7 +64,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={inter.variable}>
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          // Sanitização recomendada pela doc do Next: '<' vira <
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

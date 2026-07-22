@@ -68,6 +68,8 @@ export function LeadForm({ origem }: { origem: LeadOrigem }) {
   const [whatsapp, setWhatsapp] = useState("");
   const [valor, setValor] = useState("");
   const [finalidade, setFinalidade] = useState("");
+  // Honeypot anti-bot: invisível para humanos; se vier preenchido, o servidor descarta.
+  const [website, setWebsite] = useState("");
   const [estado, setEstado] = useState<Estado>("idle");
   const [erro, setErro] = useState<string>("");
 
@@ -93,7 +95,7 @@ export function LeadForm({ origem }: { origem: LeadOrigem }) {
     }
     setEstado("enviando");
     setErro("");
-    const res = await submitLead({ nome, whatsapp, valor, finalidade, origem });
+    const res = await submitLead({ nome, whatsapp, valor, finalidade, origem, website });
     if (res.ok) {
       setEstado("sucesso");
       abrirWhatsApp();
@@ -113,6 +115,19 @@ export function LeadForm({ origem }: { origem: LeadOrigem }) {
         <p style={{ fontSize: "0.98rem" }}>{copy.intro}</p>
       </div>
       <form onSubmit={handleSubmit} noValidate>
+        {/* Honeypot: fora da tela e fora do tab; humanos nunca preenchem */}
+        <div className="hp-wrap" aria-hidden="true">
+          <label htmlFor="lf-site">Não preencha este campo</label>
+          <input
+            id="lf-site"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </div>
         <div className="lead-grid">
           <div className="lead-field">
             <label htmlFor="lf-nome">Nome</label>
