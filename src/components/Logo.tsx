@@ -15,7 +15,7 @@ export function Logo({
   return (
     <svg
       className={className}
-      viewBox="40 55 720 345"
+      viewBox="40 38 720 362"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="ESC Facilita"
