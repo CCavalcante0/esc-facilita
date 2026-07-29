@@ -24,6 +24,7 @@ const NAV: Record<Variant, { logoHref: string; items: NavItem[] }> = {
       { href: "#comprovacao", label: "Comprovação de renda" },
       { href: "#escola", label: "Escola Facilita" },
       { href: "#faq", label: "Dúvidas" },
+      { href: "/noticias", label: "Notícias" },
       { href: "/para-operadores", label: "Torne-se uma ESC" },
       {
         href: "#lead",
@@ -40,6 +41,7 @@ const NAV: Record<Variant, { logoHref: string; items: NavItem[] }> = {
       { href: "#metodo", label: "Método" },
       { href: "#entregas", label: "O que entregamos" },
       { href: "#faq", label: "Dúvidas" },
+      { href: "/noticias", label: "Notícias" },
       // Link cruzado sempre por último, como no menu B2C ("Torne-se uma ESC")
       { href: "/", label: "Quero crédito" },
       {

@@ -44,6 +44,45 @@ export type Database = {
         }
         Relationships: []
       }
+      noticias: {
+        Row: {
+          capa_url: string | null
+          conteudo: string
+          created_at: string
+          id: string
+          publicada: boolean
+          publicada_em: string | null
+          resumo: string | null
+          slug: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          capa_url?: string | null
+          conteudo: string
+          created_at?: string
+          id?: string
+          publicada?: boolean
+          publicada_em?: string | null
+          resumo?: string | null
+          slug: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          capa_url?: string | null
+          conteudo?: string
+          created_at?: string
+          id?: string
+          publicada?: boolean
+          publicada_em?: string | null
+          resumo?: string | null
+          slug?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
