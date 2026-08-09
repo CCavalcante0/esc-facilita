@@ -101,7 +101,7 @@ export default async function PostPage({
       />
       <Header variant="b2c" />
 
-      <main>
+      <main id="conteudo">
         <article className="post">
           <div className="wrap wrap-post">
             <nav className="post-volta" aria-label="Trilha de navegação">

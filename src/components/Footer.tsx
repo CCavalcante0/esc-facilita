@@ -73,7 +73,14 @@ export function Footer({ variant }: { variant: Variant }) {
             </ul>
           </div>
         </div>
-        <div className="foot-legal">{legal}</div>
+        <div className="foot-legal">
+          {legal}
+          {/* Documento legal junto do aviso legal, e não na navegação: aparece
+              em toda página independente da variante do rodapé. */}
+          <p className="foot-docs">
+            <Link href="/privacidade">Política de Privacidade</Link>
+          </p>
+        </div>
       </div>
     </footer>
   );

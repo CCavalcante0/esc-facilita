@@ -26,6 +26,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      // Documento legal: indexável (dá confiança e o Google valoriza), mas
+      // com prioridade baixa — não é página de aquisição.
+      url: `${SITE_URL}/privacidade`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
     ...posts.map((post) => ({
       url: `${SITE_URL}/escola/${post.slug}`,
       lastModified: new Date(post.data),

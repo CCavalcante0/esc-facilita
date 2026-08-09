@@ -53,7 +53,7 @@ export default function EscolaIndex() {
       />
       <Header variant="b2c" />
 
-      <main>
+      <main id="conteudo">
         <section className="escola-topo">
           <div className="wrap">
             <div className="sec-head">

@@ -639,3 +639,32 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
   .page-b2c .mock-3d .mock { box-shadow: -18px 30px 70px rgba(20, 63, 102, 0.18); }
   .page-b2c .mock-3d:hover .mock { box-shadow: -8px 34px 78px rgba(20, 63, 102, 0.22); }
 }
+
+/* ===== Skip-link (primeiro elemento focável do documento) =====
+   Fica fora da tela até receber foco de teclado. Usa :focus, não
+   :focus-visible: ele SÓ é alcançado por teclado, então precisa aparecer
+   sempre que receber foco. */
+.skip-link {
+  position: absolute; top: 0; left: -9999px; z-index: 100;
+  background: var(--profundo); color: #fff;
+  padding: 14px 22px; border-radius: 0 0 var(--raio) 0;
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* Documento legal no rodapé. Branco cheio sobre o azul profundo: o
+   rgba(255,255,255,0.72) do texto legal ao redor não passaria AA em link. */
+.foot-docs { margin-top: 14px; }
+.foot-docs a { color: #fff; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+
+/* ===== 404 ===== */
+.erro-404 { background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 100%); padding: 84px 0 92px; }
+.erro-404 .sec-head { margin-bottom: 36px; }
+.erro-acoes { display: flex; gap: 14px; flex-wrap: wrap; }
+.erro-posts { margin-top: 64px; }
+.erro-posts .escola-grid { grid-template-columns: repeat(2, 1fr); margin-top: 0; }
+
+@media (max-width: 860px) {
+  .erro-404 { padding: 56px 0 64px; }
+  .erro-posts .escola-grid { grid-template-columns: 1fr; }
+}

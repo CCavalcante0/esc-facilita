@@ -56,7 +56,7 @@ export default function Home() {
     <div className="page-b2c">
       <Header variant="b2c" />
 
-      <main>
+      <main id="conteudo">
       {/* HERO */}
       <section className="hero" id="topo">
         <HeroGLLoader />
