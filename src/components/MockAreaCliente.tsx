@@ -4,6 +4,10 @@ import { Counter } from "./Counter";
 export function MockAreaCliente() {
   return (
     <div className="mock-entra">
+      {/* .mock-3d existe só para carregar a inclinação em perspectiva: o
+          .mock já tem `animation: respira`, que controla o transform dele e
+          sobrescreveria qualquer rotação declarada ali. */}
+      <div className="mock-3d">
       <div
         className="mock"
         role="img"
@@ -66,6 +70,7 @@ export function MockAreaCliente() {
             Falar com operador
           </span>
         </div>
+      </div>
       </div>
       <p className="mock-legenda">
         Sua área de acompanhamento: parcelas, vencimentos, condições e conta para

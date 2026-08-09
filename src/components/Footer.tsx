@@ -11,11 +11,13 @@ const DADOS: Record<
   b2c: {
     descricao:
       "Empresa Simples de Crédito. Empréstimo, financiamento e antecipação de recebíveis para quem empreende na nossa região.",
+    // Âncoras absolutas: este rodapé também aparece em /escola e
+    // /escola/[slug]. Mesma razão do Header.
     nav: [
-      { href: "#produtos", label: "Linhas de crédito" },
-      { href: "#como-funciona", label: "Como funciona" },
-      { href: "#escola", label: "Escola Facilita" },
-      { href: "#lead", label: "Área do cliente" },
+      { href: "/#produtos", label: "Linhas de crédito" },
+      { href: "/#como-funciona", label: "Como funciona" },
+      { href: "/escola", label: "Escola Facilita" },
+      { href: "/#lead", label: "Área do cliente" },
       { href: "/para-operadores", label: "Torne-se uma ESC" },
     ],
     legal:

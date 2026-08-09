@@ -7,6 +7,7 @@ import { LeadForm } from "@/components/LeadForm";
 import { HeroPattern } from "@/components/HeroPattern";
 import { HeroGLLoader } from "@/components/HeroGLLoader";
 import { Ticker } from "@/components/Ticker";
+import { CATEGORIAS, listarPosts } from "@/lib/escola";
 
 const SELOS = [
   "LC 167/2019",
@@ -289,44 +290,30 @@ export default function Home() {
             </p>
           </div>
           <div className="escola-grid">
-            <a className="card-post reveal" data-d="1" href="#escola">
-              <div className="capa"></div>
-              <div className="corpo">
-                <span className="cat">Blog · Gratuito</span>
-                <h3>Como melhorar o score antes de solicitar crédito</h3>
-                <p>
-                  O que a análise avalia e o que você consegue organizar em 90
-                  dias.
-                </p>
-              </div>
-            </a>
-            <a className="card-post reveal" data-d="2" href="#escola">
-              <div className="capa c2"></div>
-              <div className="corpo">
-                <span className="cat">Modelos · Download</span>
-                <h3>Modelos de contrato para prestador de serviço</h3>
-                <p>
-                  Contrato assinado + comprovante de pagamento = comprovação de
-                  renda válida na sua análise.
-                </p>
-              </div>
-            </a>
-            <a className="card-post reveal" data-d="3" href="#escola">
-              <div className="capa c3"></div>
-              <div className="corpo">
-                <span className="cat">Curso</span>
-                <h3>Como o crédito funciona por dentro</h3>
-                <p>
-                  Análise, aprovação, garantias e formalização — explicado por
-                  quem opera.
-                </p>
-              </div>
-            </a>
+            {listarPosts()
+              .slice(0, 3)
+              .map((post, i) => (
+                <Link
+                  key={post.slug}
+                  className="card-post reveal"
+                  data-d={i + 1}
+                  href={`/escola/${post.slug}`}
+                >
+                  <div className={`capa ${CATEGORIAS[post.categoria].capa}`}></div>
+                  <div className="corpo">
+                    <span className="cat">
+                      {CATEGORIAS[post.categoria].rotulo}
+                    </span>
+                    <h3>{post.title}</h3>
+                    <p>{post.description}</p>
+                  </div>
+                </Link>
+              ))}
           </div>
           <div className="escola-cta">
-            <a className="btn btn-profundo" href="#escola">
+            <Link className="btn btn-profundo" href="/escola">
               Acessar a Escola Facilita
-            </a>
+            </Link>
             <span className="yt">
               Em breve: canal da ESC Facilita no YouTube, com vídeos curtos e
               didáticos sobre cada etapa.

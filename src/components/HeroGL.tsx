@@ -24,31 +24,63 @@ const vec3 OFF   = vec3(0.969, 0.973, 0.953); // #F7F8F3
 const vec3 AZUL  = vec3(0.118, 0.384, 0.678); // #1E62AD
 const vec3 PROF  = vec3(0.078, 0.247, 0.400); // #143F66
 
+// Horizonte abaixo do centro: o plano ocupa só o terço inferior, longe da
+// massa de texto. Valores calibrados olhando o hero renderizado.
+const float HORIZ = -0.10;
+
 void main() {
   vec2 uv = gl_FragCoord.xy / r;          // y=0 embaixo, 1 em cima
-  float ar = r.x / r.y;
-  vec2 q = vec2(uv.x * ar, uv.y);
-
   // Base = gradiente do CSS (topo névoa -> base offwhite a 55%)
   vec3 col = mix(OFF, NEVOA, smoothstep(0.45, 1.0, uv.y));
 
-  // Três correntes senoidais lentas (as "linhas vivas" da marca)
-  float w1 = sin(q.x * 2.2 + t * 0.35) * 0.14 + sin(q.x * 4.7 - t * 0.22) * 0.05;
-  float w2 = sin(q.x * 1.6 - t * 0.28 + 1.7) * 0.18 + sin(q.x * 3.9 + t * 0.31) * 0.04;
-  float w3 = sin(q.x * 2.9 + t * 0.19 + 3.1) * 0.11;
+  // Espaço de câmera: origem no centro, normalizado pela ALTURA (o aspecto
+  // sai de graça em x, sem precisar do 'ar' explícito).
+  vec2 p = (gl_FragCoord.xy * 2.0 - r) / r.y;
 
-  float b1 = smoothstep(0.10, 0.0, abs(uv.y - 0.62 - w1));
-  float b2 = smoothstep(0.13, 0.0, abs(uv.y - 0.36 - w2));
-  float b3 = smoothstep(0.08, 0.0, abs(uv.y - 0.80 - w3));
+  float d = HORIZ - p.y;  // > 0 abaixo do horizonte
 
-  col = mix(col, AZUL, b1 * 0.10);
-  col = mix(col, PROF, b2 * 0.07);
-  col = mix(col, AZUL, b3 * 0.08);
+  if (d > 0.002) {
+    // Projeção em perspectiva de um plano infinito: z tende ao infinito ao
+    // se aproximar do horizonte. É isto que dá volume de verdade — as linhas
+    // convergem num ponto de fuga, em vez de serem ondas achatadas.
+    float z = 0.55 / d;
+    float x = p.x * z;
+    float march = z * 2.0 + t * 0.5; // travessas correndo em direção ao olho
 
-  // Brilho que respira no canto superior direito (onde fica o mock)
-  vec2 gc = vec2(0.82 * ar, 0.72 + sin(t * 0.2) * 0.04);
-  float g = smoothstep(0.85, 0.0, distance(q, gc));
-  col = mix(col, AZUL, g * 0.05);
+    // Névoa exponencial: apaga o que está longe. Além do realismo, é ela que
+    // impede o serrilhado das linhas distantes — WebGL1 não tem derivadas
+    // (fwidth) sem extensão, então a névoa faz o papel do antialias.
+    float fog = exp(-z * 0.24);
+
+    // Longitudinais. A largura cresce com z para manter espessura quase
+    // constante na tela, como numa câmera real; a frequência precisa ser
+    // alta (3.0) porque a largura de mundo visível perto do olho é pequena.
+    float gx = abs(fract(x * 3.0) - 0.5);
+    float wx = clamp(0.055 * z, 0.035, 0.48);
+    float lx = smoothstep(wx, wx * 0.25, gx);
+
+    // Travessas
+    float gz = abs(fract(march) - 0.5);
+    float lz = smoothstep(0.45, 0.10, gz);
+
+    float grade = max(lx * 0.9, lz * 0.55) * fog;
+    // Quase apagado sob a coluna de texto (esquerda), presente à direita:
+    // o contraste do corpo de texto vem antes do efeito.
+    grade *= mix(0.12, 1.0, smoothstep(-1.0, 0.35, p.x));
+
+    col = mix(col, AZUL, grade * 0.26);
+  }
+
+  // Luz volumétrica no ponto de fuga: a profundidade vem da luz, não de um
+  // objeto flutuando — mesma leitura de Mercury e Stripe.
+  vec2 fuga = vec2(0.35, HORIZ);
+  float dist = distance(p, fuga);
+  col = mix(col, vec3(1.0), exp(-dist * 2.0) * 0.45);
+  col = mix(col, AZUL, exp(-dist * 0.8) * 0.06);
+
+  // Atmosfera acima do horizonte, respirando devagar.
+  float ceu = smoothstep(HORIZ - 0.05, HORIZ + 0.9, p.y);
+  col = mix(col, PROF, ceu * (0.02 + 0.012 * sin(t * 0.25)));
 
   gl_FragColor = vec4(col, 1.0);
 }`;
