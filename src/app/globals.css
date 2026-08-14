@@ -668,3 +668,91 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
   .erro-404 { padding: 56px 0 64px; }
   .erro-posts .escola-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== M1 — Área do Cliente / Admin (login, /painel, /admin) =====
+   Área logada não usa Header/Footer institucionais nem as classes
+   .page-b2c/.page-b2b (por isso .tag ganha uma regra "solta" aqui: nas
+   landings ela já herda tamanho de .page-b2c .tag/.page-b2b .tag). O
+   restante (.btn, .lead-*, .parcela, .titulo, .sec-head) é 100% reaproveitado. */
+
+.tag {
+  font-size: 0.67rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* ----- Telas de auth (login, esqueci/redefinir senha) ----- */
+.auth-page {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 55%);
+  padding: 48px 0;
+}
+.auth-wrap { display: flex; flex-direction: column; align-items: center; gap: 28px; max-width: 460px; }
+.auth-logo { display: block; }
+.auth-wrap .lead-card { width: 100%; box-shadow: 0 18px 48px rgba(20, 63, 102, 0.1); }
+
+/* ----- Chrome compartilhado /painel e /admin ----- */
+.area-app { min-height: 100vh; background: var(--offwhite); }
+.area-topbar { background: var(--branco); border-bottom: 1px solid var(--linha); }
+.area-topbar-in { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+.area-topbar-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--azul); background: var(--nevoa); padding: 4px 10px; border-radius: 6px;
+}
+.area-topbar-user { display: flex; align-items: center; gap: 16px; font-size: 0.92rem; color: var(--cinza); }
+.area-main { padding: 40px 0 72px; }
+
+/* ----- /painel: lista de contratos ----- */
+.contratos-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.contrato-card {
+  display: flex; flex-direction: column; gap: 14px; background: var(--branco);
+  border: 1px solid var(--linha); border-radius: var(--raio); padding: 24px;
+  text-decoration: none; transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.contrato-card:hover { box-shadow: 0 16px 40px rgba(20, 63, 102, 0.1); transform: translateY(-3px); }
+.contrato-card-selo {
+  align-self: flex-start; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
+  color: var(--profundo); background: var(--nevoa); padding: 5px 10px; border-radius: 6px;
+}
+.contrato-card-saldo { display: flex; flex-direction: column; gap: 4px; }
+.contrato-card-saldo .lbl { font-size: 0.76rem; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.03em; }
+.contrato-card-saldo .val { font-weight: 800; font-size: 1.4rem; color: var(--profundo); font-variant-numeric: tabular-nums; }
+.contrato-card .tag { align-self: flex-start; }
+
+/* ----- /painel/[id]: detalhe do contrato (mesma linguagem do mock do hero) ----- */
+.painel-card {
+  background: var(--branco); border: 1px solid var(--linha); border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(20, 63, 102, 0.1); overflow: hidden; max-width: 620px;
+}
+.painel-top { background: var(--profundo); color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; }
+.painel-quem { font-size: 0.78rem; opacity: 0.7; letter-spacing: 0.04em; text-transform: uppercase; }
+.painel-nome { font-weight: 700; font-size: 1.1rem; }
+.painel-selo { font-size: 0.68rem; background: rgba(255, 255, 255, 0.14); padding: 5px 10px; border-radius: 6px; letter-spacing: 0.06em; }
+.painel-body { padding: 22px 24px; }
+.painel-saldo { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 18px; border-bottom: 1px dashed var(--linha); margin-bottom: 16px; }
+.painel-saldo .lbl { font-size: 0.76rem; color: var(--cinza); letter-spacing: 0.03em; text-transform: uppercase; }
+.painel-saldo .val { font-weight: 800; font-size: 1.7rem; color: var(--profundo); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.painel-foot { display: flex; gap: 10px; padding: 18px 24px; background: var(--nevoa); border-top: 1px solid var(--linha); flex-wrap: wrap; }
+
+/* ----- /admin ----- */
+.admin-cabecalho { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.admin-table-wrap { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.admin-table th {
+  text-align: left; padding: 12px 18px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--cinza); background: var(--offwhite); border-bottom: 1px solid var(--linha);
+}
+.admin-table td { padding: 14px 18px; border-bottom: 1px solid var(--offwhite); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table a { color: var(--azul); font-weight: 600; text-decoration: none; }
+.admin-table a:hover { text-decoration: underline; }
+.admin-parcela-form { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.admin-parcela-form .lead-field { flex: none; }
+.admin-parcela-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.admin-parcela-acoes .btn { padding: 6px 12px; font-size: 0.76rem; }
+.admin-parcela-acoes .btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+@media (max-width: 640px) {
+  .area-topbar-in { height: auto; padding: 14px 0; flex-wrap: wrap; gap: 12px; }
+  .painel-top, .painel-body, .painel-foot { padding-left: 18px; padding-right: 18px; }
+  .admin-table th, .admin-table td { padding: 10px 12px; }
+}

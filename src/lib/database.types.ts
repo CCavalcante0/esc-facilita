@@ -44,6 +44,147 @@ export type Database = {
         }
         Relationships: []
       }
+      perfis: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          nome: string
+          role: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      clientes: {
+        Row: {
+          cpf: string
+          created_at: string
+          id: string
+          telefone: string | null
+        }
+        Insert: {
+          cpf: string
+          created_at?: string
+          id: string
+          telefone?: string | null
+        }
+        Update: {
+          cpf?: string
+          created_at?: string
+          id?: string
+          telefone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contratos: {
+        Row: {
+          agencia: string | null
+          banco: string | null
+          cliente_id: string
+          conta_deposito: string | null
+          created_at: string
+          id: string
+          numero: string
+          prazo_meses: number | null
+          saldo_devedor: number
+          status: string
+          taxa_juros: number | null
+        }
+        Insert: {
+          agencia?: string | null
+          banco?: string | null
+          cliente_id: string
+          conta_deposito?: string | null
+          created_at?: string
+          id?: string
+          numero: string
+          prazo_meses?: number | null
+          saldo_devedor: number
+          status?: string
+          taxa_juros?: number | null
+        }
+        Update: {
+          agencia?: string | null
+          banco?: string | null
+          cliente_id?: string
+          conta_deposito?: string | null
+          created_at?: string
+          id?: string
+          numero?: string
+          prazo_meses?: number | null
+          saldo_devedor?: number
+          status?: string
+          taxa_juros?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parcelas: {
+        Row: {
+          contrato_id: string
+          created_at: string
+          id: string
+          numero: number
+          pago_em: string | null
+          status: string
+          valor: number
+          vencimento: string
+        }
+        Insert: {
+          contrato_id: string
+          created_at?: string
+          id?: string
+          numero: number
+          pago_em?: string | null
+          status?: string
+          valor: number
+          vencimento: string
+        }
+        Update: {
+          contrato_id?: string
+          created_at?: string
+          id?: string
+          numero?: number
+          pago_em?: string | null
+          status?: string
+          valor?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parcelas_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

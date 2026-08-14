@@ -30,35 +30,74 @@ npm run dev                  # http://localhost:3000
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase | Dashboard Supabase → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Chave publishable (insert de leads) | Dashboard Supabase → Settings → API Keys |
-| `SUPABASE_SECRET_KEY` | (Fase 3) leitura de leads no backoffice | Dashboard Supabase → Settings → API Keys |
+| `SUPABASE_SECRET_KEY` | `/admin` cria o login do cliente (Supabase Auth) | Dashboard Supabase → Settings → API Keys |
 
 Nunca commitar `.env.local` (já ignorado). Segredos ficam também nas env vars da Vercel.
+
+### Bootstrap do primeiro operador
+
+Ninguém se auto-cadastra (nem cliente, nem operador) — é assim por design (ver
+issue #1). Isso significa que a primeíssima conta de operador precisa ser
+criada manualmente, uma única vez, direto no Supabase Studio:
+
+1. **Authentication → Add user** — crie com e-mail e senha (marque
+   "Auto Confirm User"). Copie o UUID gerado.
+2. **SQL Editor**:
+   ```sql
+   insert into public.perfis (id, role, nome)
+   values ('<uuid do usuário criado acima>', 'operador', 'Seu Nome');
+   ```
+3. Login em `/login` com esse e-mail/senha → cai direto em `/admin`.
+
+Depois disso, novos operadores só podem ser criados por outro operador via
+SQL (não há tela para isso no M1 — só o cadastro de clientes tem UI).
 
 ## Estrutura
 
 ```
 src/
+├── middleware.ts                # protege /painel e /admin (sessão + role do operador)
 ├── app/
-│   ├── layout.tsx              # Inter local + metadata base + OG/Twitter
-│   ├── page.tsx                # ROTA / — landing B2C (crédito)
-│   ├── para-operadores/        # ROTA /para-operadores — landing B2B (estruturação)
-│   ├── opengraph-image.tsx     # OG image gerada (tokens da IDV)
-│   ├── sitemap.ts / robots.ts  # SEO
-│   ├── icon.svg                # favicon (logo redução 1)
-│   └── globals.css             # CSS portado das landings aprovadas (tokens da IDV)
-├── components/                 # compartilhados entre as duas páginas
-│   ├── Header.tsx / Footer.tsx # variante b2c | b2b; Footer traz o rodapé legal obrigatório
-│   ├── Logo.tsx                # SVG inline oficial (cor | branca)
-│   ├── Faq.tsx                 # details/summary acessível
-│   ├── MockAreaCliente.tsx     # elemento assinatura do hero B2C
-│   ├── MockEscSystem.tsx       # elemento assinatura do hero B2B
-│   └── LeadForm.tsx            # formulário de pré-solicitação (client)
-├── actions/submit-lead.ts      # server action: valida + grava lead no Supabase
+│   ├── layout.tsx               # Inter local + metadata base + OG/Twitter
+│   ├── page.tsx                 # ROTA / — landing B2C (crédito)
+│   ├── para-operadores/         # ROTA /para-operadores — landing B2B (estruturação)
+│   ├── login/, esqueci-senha/, redefinir-senha/  # auth (M1)
+│   ├── auth/callback/route.ts   # troca o code do e-mail (PKCE) por sessão
+│   ├── painel/                  # ROTA /painel — área do cliente (M1)
+│   │   ├── layout.tsx           # topbar + botão sair
+│   │   ├── page.tsx             # lista de contratos do cliente
+│   │   └── [id]/page.tsx        # detalhe do contrato (visual = MockAreaCliente)
+│   ├── admin/                   # ROTA /admin — mini-backoffice do operador (M1)
+│   │   ├── layout.tsx           # topbar + guarda de role (redireciona não-operador)
+│   │   ├── page.tsx             # lista de clientes
+│   │   ├── clientes/[id]/       # detalhe do cliente + contratos
+│   │   └── contratos/[id]/      # parcelas do contrato (lançar/marcar paga)
+│   ├── opengraph-image.tsx      # OG image gerada (tokens da IDV)
+│   ├── sitemap.ts / robots.ts   # SEO
+│   ├── icon.svg                 # favicon (logo redução 1)
+│   └── globals.css              # CSS portado das landings aprovadas (tokens da IDV)
+├── components/                  # compartilhados entre as duas páginas
+│   ├── Header.tsx / Footer.tsx  # variante b2c | b2b; Footer traz o rodapé legal obrigatório
+│   ├── Logo.tsx                 # SVG inline oficial (cor | branca)
+│   ├── Faq.tsx                  # details/summary acessível
+│   ├── MockAreaCliente.tsx      # elemento assinatura do hero B2C — referência visual de /painel/[id]
+│   ├── MockEscSystem.tsx        # elemento assinatura do hero B2B
+│   ├── LeadForm.tsx             # formulário de pré-solicitação (client)
+│   ├── LoginForm.tsx, EsqueciSenhaForm.tsx, RedefinirSenhaForm.tsx  # auth (client)
+│   └── admin/                   # forms/ações do mini-backoffice (client)
+├── actions/
+│   ├── submit-lead.ts           # server action: valida + grava lead no Supabase
+│   ├── auth.ts                  # signIn, signOut, requestPasswordReset, updatePassword
+│   └── admin.ts                 # criarCliente, criarContrato, criarParcela, atualizarParcelaStatus
 └── lib/
-    ├── config.ts               # ⚠️ WHATSAPP_NUMBER, SITE_URL, CONTACT_EMAIL (placeholders)
-    ├── supabase/server.ts      # client Supabase (server-side)
-    └── database.types.ts       # types gerados do banco
-supabase/migrations/            # migrations versionadas
+    ├── config.ts                # ⚠️ WHATSAPP_NUMBER, SITE_URL, CONTACT_EMAIL (placeholders)
+    ├── database.types.ts        # types gerados do banco
+    └── supabase/
+        ├── server.ts            # createServerSupabase (público) + createAuthServerClient (sessão)
+        ├── client.ts            # client de Client Component (browser)
+        ├── admin.ts             # service role — só para auth.admin.createUser
+        └── middleware.ts        # renova a sessão a cada request
+supabase/migrations/             # migrations versionadas
 ```
 
 ## Convenções de IDV (invioláveis)
@@ -82,11 +121,18 @@ O trabalho é modular. Cada fase é um módulo independente — abrir branch por
 | Fase | Módulo | Status |
 |---|---|---|
 | **1** | Site institucional (landings B2C/B2B), SEO, formulário de leads, deploy | ✅ em andamento |
-| **2** | Área do Cliente (auth, dashboard de contrato, upload de docs) | ⏳ |
-| **3** | Área do Operador / backoffice (esteira, ficha, contratos, credenciais) | ⏳ |
+| **2** | Área do Cliente (auth, dashboard de contrato) | ✅ em andamento (M1 — issue #1) |
+| **3** | Área do Operador / backoffice (esteira, ficha, upload de docs, credenciais) | ⏳ |
 | **4** | Escola Facilita (blog, modelos, curso, vídeos) | ⏳ |
 
-Modelo de dados completo e RLS por fase: seção 6 do PRD. **Fase 1 usa apenas a tabela `leads`.**
+> `PRD-ESC-FACILITA.md`, citado neste README e no `ROADMAP.md`, não está
+> neste repositório — o modelo de dados abaixo foi desenhado a partir da
+> issue #1, não da seção 6 do PRD.
+
+Tabelas hoje: `leads` (Fase 1) e `perfis` / `clientes` / `contratos` /
+`parcelas` (M1 — RLS: cliente só enxerga os próprios registros, operador
+enxerga tudo via `is_operador()`). Upload de documentos e solicitação de
+novo crédito (tabela/bucket `documentos`) ficam para o M3.
 
 ## Fluxo de trabalho (Git)
 
