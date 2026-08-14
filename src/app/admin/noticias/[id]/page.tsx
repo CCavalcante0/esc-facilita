@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { createSSRClient } from "@/lib/supabase/ssr";
+import { createAuthServerClient } from "@/lib/supabase/server";
 import { NoticiaEditor } from "@/components/NoticiaEditor";
 
 export const metadata: Metadata = {
@@ -14,11 +14,11 @@ export default async function EditarNoticiaPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/login");
 
   const { data: noticia } = await supabase
     .from("noticias")

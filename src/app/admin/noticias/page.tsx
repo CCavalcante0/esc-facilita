@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createSSRClient } from "@/lib/supabase/ssr";
+import { createAuthServerClient } from "@/lib/supabase/server";
 import { NoticiaAdminList } from "@/components/NoticiaAdminList";
-import { logout } from "@/actions/auth";
 
 export const metadata: Metadata = {
   title: "Notícias · Painel",
@@ -11,11 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminNoticiasPage() {
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/login");
 
   const { data } = await supabase
     .from("noticias")
@@ -37,11 +36,6 @@ export default async function AdminNoticiasPage() {
             <Link href="/admin/noticias/nova" className="btn btn-azul">
               + Nova notícia
             </Link>
-            <form action={logout}>
-              <button type="submit" className="btn btn-borda">
-                Sair
-              </button>
-            </form>
           </div>
         </header>
 

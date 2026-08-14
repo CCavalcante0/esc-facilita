@@ -1,59 +1,41 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { login } from "@/actions/auth";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "@/actions/auth";
 
 export function LoginForm() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const [pending, start] = useTransition();
+  const searchParams = useSearchParams();
+  const proximo = searchParams.get("proximo") ?? "";
+  const linkInvalido = searchParams.get("erro") === "link-invalido";
+  const [erro, setErro] = useState(
+    linkInvalido ? "Esse link expirou ou já foi usado. Peça um novo." : ""
+  );
+  const [pending, startTransition] = useTransition();
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSubmit(formData: FormData) {
     setErro("");
-    start(async () => {
-      const res = await login(email, senha);
-      if (res.ok) {
-        router.replace("/admin/noticias");
-        router.refresh();
-      } else {
-        setErro(res.error);
-      }
+    startTransition(async () => {
+      const res = await signIn(formData);
+      if (!res.ok) setErro(res.error);
     });
   }
 
   return (
-    <form onSubmit={onSubmit} className="lead-card admin-login-card" noValidate>
-      <div className="sec-head" style={{ marginBottom: 22 }}>
-        <h1 className="titulo" style={{ fontSize: "clamp(1.4rem,2.6vw,1.8rem)" }}>
-          Painel · Entrar
-        </h1>
-        <p style={{ fontSize: "0.98rem" }}>
-          Acesso restrito à equipe da ESC Facilita.
-        </p>
-      </div>
-      <div className="lead-field" style={{ marginBottom: 16 }}>
-        <label htmlFor="lg-email">E-mail</label>
-        <input
-          id="lg-email"
-          type="email"
-          autoComplete="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
+    <form action={handleSubmit} noValidate>
+      <input type="hidden" name="proximo" value={proximo} />
       <div className="lead-field">
+        <label htmlFor="lg-email">E-mail</label>
+        <input id="lg-email" name="email" type="email" autoComplete="email" required />
+      </div>
+      <div className="lead-field" style={{ marginTop: 14 }}>
         <label htmlFor="lg-senha">Senha</label>
         <input
           id="lg-senha"
+          name="password"
           type="password"
           autoComplete="current-password"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
           required
         />
       </div>
@@ -66,6 +48,9 @@ export function LoginForm() {
         <button type="submit" className="btn btn-azul" disabled={pending}>
           {pending ? "Entrando..." : "Entrar"}
         </button>
+        <p className="lead-nota">
+          <Link href="/esqueci-senha">Esqueci minha senha</Link>
+        </p>
       </div>
     </form>
   );

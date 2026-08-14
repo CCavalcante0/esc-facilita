@@ -1,41 +1,34 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-/**
- * Next 16 renomeou o antigo `middleware` para `proxy` (runtime nodejs).
- * Aqui ele renova a sessão do Supabase Auth em cada request de /admin, para o
- * token não expirar no meio do uso do painel. Só roda em /admin (ver matcher).
- */
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const { response, user, supabase } = await updateSession(request);
+  const { pathname } = request.nextUrl;
+  const isAdmin = pathname.startsWith("/admin");
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) return response;
+  if (!user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("proximo", pathname);
+    return NextResponse.redirect(url);
+  }
 
-  const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) =>
-          request.cookies.set(name, value),
-        );
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
-      },
-    },
-  });
-
-  // getUser() valida o token e dispara o refresh dos cookies quando necessário.
-  await supabase.auth.getUser();
+  if (isAdmin) {
+    const { data: perfil } = await supabase
+      .from("perfis")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (perfil?.role !== "operador") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/painel";
+      return NextResponse.redirect(url);
+    }
+  }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/painel/:path*", "/admin/:path*"],
 };

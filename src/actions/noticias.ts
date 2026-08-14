@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSSRClient } from "@/lib/supabase/ssr";
+import { createAuthServerClient } from "@/lib/supabase/server";
 import type { TablesUpdate } from "@/lib/database.types";
 
 export interface NoticiaInput {
@@ -37,7 +37,7 @@ function slugify(titulo: string): string {
 export async function salvarNoticia(
   input: NoticiaInput,
 ): Promise<SalvarResult> {
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -102,7 +102,7 @@ export async function definirPublicacao(
   id: string,
   publicada: boolean,
 ): Promise<AcaoResult> {
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -123,7 +123,7 @@ export async function definirPublicacao(
 }
 
 export async function excluirNoticia(id: string): Promise<AcaoResult> {
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

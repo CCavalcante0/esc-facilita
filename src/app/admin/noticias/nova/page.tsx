@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createSSRClient } from "@/lib/supabase/ssr";
+import { createAuthServerClient } from "@/lib/supabase/server";
 import { NoticiaEditor } from "@/components/NoticiaEditor";
 
 export const metadata: Metadata = {
@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function NovaNoticiaPage() {
-  const supabase = await createSSRClient();
+  const supabase = await createAuthServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/login");
 
   return (
     <main className="admin-shell">
