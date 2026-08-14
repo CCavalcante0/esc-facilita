@@ -52,6 +52,13 @@ criada manualmente, uma única vez, direto no Supabase Studio:
 Depois disso, novos operadores só podem ser criados por outro operador via
 SQL (não há tela para isso no M1 — só o cadastro de clientes tem UI).
 
+> **Quem já administrava notícias precisa do mesmo passo 2.** O painel de
+> notícias tinha login próprio em `/admin/login` e aceitava qualquer usuário
+> autenticado. Agora ele vive sob o mesmo `/admin` do operador, com a mesma
+> guarda de papel — então cada conta que já publicava notícias precisa de uma
+> linha em `perfis` com `role = 'operador'`, senão é redirecionada para
+> `/painel`. O login dessas contas passa a ser `/login`.
+
 ## Estrutura
 
 ```
@@ -67,11 +74,13 @@ src/
 │   │   ├── layout.tsx           # topbar + botão sair
 │   │   ├── page.tsx             # lista de contratos do cliente
 │   │   └── [id]/page.tsx        # detalhe do contrato (visual = MockAreaCliente)
+│   ├── noticias/                # ROTA /noticias — lista pública (ISR) + artigo
 │   ├── admin/                   # ROTA /admin — mini-backoffice do operador (M1)
 │   │   ├── layout.tsx           # topbar + guarda de role (redireciona não-operador)
 │   │   ├── page.tsx             # lista de clientes
 │   │   ├── clientes/[id]/       # detalhe do cliente + contratos
-│   │   └── contratos/[id]/      # parcelas do contrato (lançar/marcar paga)
+│   │   ├── contratos/[id]/      # parcelas do contrato (lançar/marcar paga)
+│   │   └── noticias/            # CMS de notícias (herda a guarda de role do layout)
 │   ├── opengraph-image.tsx      # OG image gerada (tokens da IDV)
 │   ├── sitemap.ts / robots.ts   # SEO
 │   ├── icon.svg                 # favicon (logo redução 1)
@@ -88,7 +97,8 @@ src/
 ├── actions/
 │   ├── submit-lead.ts           # server action: valida + grava lead no Supabase
 │   ├── auth.ts                  # signIn, signOut, requestPasswordReset, updatePassword
-│   └── admin.ts                 # criarCliente, criarContrato, criarParcela, atualizarParcelaStatus
+│   ├── admin.ts                 # criarCliente, criarContrato, criarParcela, atualizarParcelaStatus
+│   └── noticias.ts              # CRUD das notícias (criar, editar, publicar, excluir)
 └── lib/
     ├── config.ts                # ⚠️ WHATSAPP_NUMBER, SITE_URL, CONTACT_EMAIL (placeholders)
     ├── database.types.ts        # types gerados do banco
