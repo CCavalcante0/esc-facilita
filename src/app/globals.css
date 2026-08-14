@@ -636,3 +636,135 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
   .noticias-grid { grid-template-columns: 1fr; }
   .admin-linha { flex-direction: column; align-items: flex-start; }
 }
+
+/* ===== Escola Facilita: índice (/escola) e post (/escola/[slug]) =====
+   Reusa .card-post, .escola-grid, .sec-head e a tipografia já aprovadas.
+   Só o que é exclusivo do blog vive aqui. */
+
+/* Cabeçalho do índice — mesma respiração do hero, sem o WebGL. */
+.escola-topo { background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 100%); padding: 72px 0 44px; }
+.escola-topo .sec-head { margin-bottom: 0; }
+.escola-vazio { color: var(--cinza); padding: 40px 0; }
+
+/* O card do índice usa h2 (hierarquia correta sob o h1 da página); no
+   restante do site o mesmo card usa h3. Os dois herdam o mesmo desenho. */
+.card-post h2 { font-weight: 700; font-size: 1.06rem; color: var(--profundo); margin: 10px 0 8px; line-height: 1.35; letter-spacing: -0.01em; }
+.card-post .meta { display: block; margin-top: 14px; font-size: 0.78rem; color: var(--cinza); }
+
+/* ----- Post ----- */
+.post { background: var(--branco); }
+/* Medida de leitura: ~68 caracteres por linha, o ponto ótimo para texto corrido. */
+.wrap-post { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+.post-volta { padding: 32px 0 0; font-size: 0.88rem; }
+.post-volta a { color: var(--azul); text-decoration: none; font-weight: 600; }
+.post-volta a:hover { text-decoration: underline; }
+
+/* <header> do artigo: precisa anular a regra global `header` (a barra de
+   navegação), senão herda sticky + blur + fundo e o título gruda no topo. */
+.post-head { position: static; z-index: auto; background: none; backdrop-filter: none; padding: 28px 0 34px; border-bottom: 1px solid var(--linha); margin-bottom: 38px; }
+.post-head .cat { font-size: 0.69rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--azul); }
+.post-head h1 { font-size: clamp(1.9rem, 4.4vw, 2.7rem); font-weight: 800; color: var(--profundo); line-height: 1.16; letter-spacing: -0.025em; margin: 14px 0 0; }
+.post-desc { margin-top: 18px; font-size: 1.09rem; color: var(--cinza); }
+.post-meta { margin-top: 20px; font-size: 0.84rem; color: var(--cinza); }
+
+/* ----- Corpo do post (MDX) ----- */
+.prose-esc { font-size: 1.03rem; color: var(--preto); padding-bottom: 12px; }
+.prose-esc > * + * { margin-top: 1.15em; }
+.prose-esc h2 { font-size: 1.5rem; font-weight: 700; color: var(--profundo); line-height: 1.25; letter-spacing: -0.015em; margin-top: 2.1em; }
+.prose-esc h3 { font-size: 1.13rem; font-weight: 700; color: var(--profundo); line-height: 1.35; margin-top: 1.8em; }
+.prose-esc ul, .prose-esc ol { padding-left: 1.35em; }
+.prose-esc li + li { margin-top: 0.5em; }
+.prose-esc li::marker { color: var(--azul); }
+.prose-esc strong { color: var(--profundo); font-weight: 700; }
+.prose-esc a { color: var(--azul); text-decoration: underline; text-underline-offset: 2px; }
+.prose-esc blockquote { border-left: 3px solid var(--azul); background: var(--nevoa); border-radius: 0 var(--raio) var(--raio) 0; padding: 18px 24px; color: var(--profundo); font-weight: 600; }
+.prose-esc blockquote > * + * { margin-top: 0.7em; }
+.prose-esc hr { border: none; border-top: 1px solid var(--linha); margin: 2.4em 0; }
+.prose-esc code { background: var(--nevoa); border-radius: 5px; padding: 2px 6px; font-size: 0.9em; }
+/* Tabela do remark-gfm: rola sozinha no celular em vez de estourar a página. */
+.prose-esc table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+.prose-esc th, .prose-esc td { border: 1px solid var(--linha); padding: 10px 14px; text-align: left; }
+.prose-esc th { background: var(--nevoa); color: var(--profundo); font-weight: 700; }
+
+/* Aviso obrigatório: crédito sujeito a análise + alerta antifraude. */
+.post-aviso { margin: 42px 0 8px; background: var(--nevoa); border-left: 3px solid var(--azul); border-radius: 0 var(--raio) var(--raio) 0; padding: 20px 24px; font-size: 0.88rem; color: var(--profundo); }
+
+/* ----- Continue lendo ----- */
+.post-rel { border-top: 1px solid var(--linha); margin-top: 56px; padding: 52px 0 72px; background: var(--offwhite); }
+.post-rel-titulo { font-size: 1.35rem; font-weight: 700; color: var(--profundo); letter-spacing: -0.015em; margin-bottom: 24px; }
+.post-rel .escola-grid { grid-template-columns: repeat(2, 1fr); margin-top: 0; }
+
+@media (max-width: 860px) {
+  .escola-topo { padding: 52px 0 32px; }
+  .post-rel .escola-grid { grid-template-columns: 1fr; }
+  .post-head h1 { letter-spacing: -0.02em; }
+}
+
+/* ===== Profundidade 3D do mock do hero (B2C) =====
+   Referência do setor: Mercury e Cash App fazem a INTERFACE ser o herói, com
+   profundidade real, em vez de pendurar um objeto 3D decorativo. Aqui a
+   inclinação é uma rotação 3D de verdade dentro de um espaço com perspectiva
+   — não um skew fingindo volume.
+
+   Só a partir de 861px: no celular o hero vira uma coluna só e qualquer
+   inclinação atrapalharia a leitura dos valores. */
+@media (min-width: 861px) {
+  .page-b2c .mock-entra { perspective: 1500px; perspective-origin: 62% 38%; }
+
+  .page-b2c .mock-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(-10deg) rotateX(4deg);
+    transition: transform 0.7s var(--ease-brand);
+  }
+  /* Ao aproximar o cursor o card se endireita, como se virasse para você. */
+  .page-b2c .mock-3d:hover { transform: rotateY(-3deg) rotateX(1deg); }
+
+  /* Painel fantasma atrás, em Z negativo: dá a terceira camada de
+     profundidade. Fica atrás por Z real, não por z-index. */
+  .page-b2c .mock-3d::before {
+    content: "";
+    position: absolute;
+    /* Vaza pela direita (o lado que recua na rotação) e mal encosta embaixo:
+       descer mais faria o painel colidir com a .mock-legenda. */
+    inset: 6% -7% -2% 10%;
+    background: linear-gradient(150deg, var(--nevoa), var(--branco));
+    border: 1px solid var(--linha);
+    border-radius: 18px;
+    transform: translateZ(-90px);
+  }
+
+  /* Sombra deslocada para a esquerda: coerente com a face direita do card
+     estar recuando no espaço. */
+  .page-b2c .mock-3d .mock { box-shadow: -18px 30px 70px rgba(20, 63, 102, 0.18); }
+  .page-b2c .mock-3d:hover .mock { box-shadow: -8px 34px 78px rgba(20, 63, 102, 0.22); }
+}
+
+/* ===== Skip-link (primeiro elemento focável do documento) =====
+   Fica fora da tela até receber foco de teclado. Usa :focus, não
+   :focus-visible: ele SÓ é alcançado por teclado, então precisa aparecer
+   sempre que receber foco. */
+.skip-link {
+  position: absolute; top: 0; left: -9999px; z-index: 100;
+  background: var(--profundo); color: #fff;
+  padding: 14px 22px; border-radius: 0 0 var(--raio) 0;
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* Documento legal no rodapé. Branco cheio sobre o azul profundo: o
+   rgba(255,255,255,0.72) do texto legal ao redor não passaria AA em link. */
+.foot-docs { margin-top: 14px; }
+.foot-docs a { color: #fff; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+
+/* ===== 404 ===== */
+.erro-404 { background: linear-gradient(180deg, var(--nevoa) 0%, var(--offwhite) 100%); padding: 84px 0 92px; }
+.erro-404 .sec-head { margin-bottom: 36px; }
+.erro-acoes { display: flex; gap: 14px; flex-wrap: wrap; }
+.erro-posts { margin-top: 64px; }
+.erro-posts .escola-grid { grid-template-columns: repeat(2, 1fr); margin-top: 0; }
+
+@media (max-width: 860px) {
+  .erro-404 { padding: 56px 0 64px; }
+  .erro-posts .escola-grid { grid-template-columns: 1fr; }
+}

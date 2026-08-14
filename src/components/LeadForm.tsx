@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { submitLead, type LeadOrigem } from "@/actions/submit-lead";
 import { waLink } from "@/lib/config";
 
@@ -231,10 +232,16 @@ export function LeadForm({ origem }: { origem: LeadOrigem }) {
           >
             {estado === "enviando" ? "Enviando..." : copy.botao}
           </button>
+          {/* Aviso de tratamento de dado pessoal (LGPD art. 9º: informação
+              clara sobre finalidade antes da coleta). O link para a política
+              é obrigatório aqui — é o ponto exato em que o dado é fornecido. */}
           <p className="lead-nota">
             Ao enviar, você concorda em ser contatado pela ESC Facilita pelo
-            WhatsApp informado. Seus dados são usados apenas para esse
-            atendimento.
+            WhatsApp informado. Coletamos apenas nome, WhatsApp, valor e
+            finalidade, e usamos esses dados <strong>só para atender a esta
+            solicitação</strong> — não repassamos a terceiros. Você pode pedir
+            acesso ou exclusão a qualquer momento. Saiba mais na{" "}
+            <Link href="/privacidade">Política de Privacidade</Link>.
           </p>
         </div>
       </form>

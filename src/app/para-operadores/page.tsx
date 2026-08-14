@@ -71,7 +71,7 @@ export default function ParaOperadores() {
     <div className="page-b2b">
       <Header variant="b2b" />
 
-      <main>
+      <main id="conteudo">
       {/* HERO */}
       <section className="hero" id="topo">
         <HeroGLLoader />
@@ -222,7 +222,7 @@ export default function ParaOperadores() {
                   Servir de fachada para operação que continua informal na prática
                 </li>
                 <li>
-                  Prometer "blindagem" — estrutura reduz exposição, não elimina
+                  Prometer “blindagem” — estrutura reduz exposição, não elimina
                   obrigações
                 </li>
               </ul>
@@ -339,8 +339,8 @@ export default function ParaOperadores() {
             <div className="obj-card pergunta reveal-esq">
               <div className="rotulo">A pergunta que trava todo mundo</div>
               <h3>
-                "Se eu regularizar, não vou pagar mais imposto e chamar mais
-                atenção?"
+                “Se eu regularizar, não vou pagar mais imposto e chamar mais
+                atenção?”
               </h3>
               <p>
                 É a objeção mais comum — e a mais compreensível. Quem construiu a

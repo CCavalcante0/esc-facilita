@@ -33,12 +33,12 @@ export function Counter({
     const el = ref.current;
     if (!el) return;
 
+    // Sem animação: basta NÃO observar. Enquanto `pronto` for false o render
+    // já mostra `value` diretamente (ver `formatado` abaixo), então setar
+    // estado aqui seria redundante — e setState síncrono no corpo do efeito
+    // dispara renders em cascata (regra react-hooks/set-state-in-effect).
     const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduzido || !("IntersectionObserver" in window)) {
-      setAtual(value);
-      setPronto(true);
-      return;
-    }
+    if (reduzido || !("IntersectionObserver" in window)) return;
 
     const observer = new IntersectionObserver(
       (entries) => {

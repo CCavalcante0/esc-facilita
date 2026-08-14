@@ -72,6 +72,12 @@ export default function RootLayout({
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
           }}
         />
+        {/* Primeiro elemento focável do documento: quem navega por teclado
+            pula o menu inteiro em vez de tabular link por link. Fica fora da
+            tela até receber foco (ver .skip-link em globals.css). */}
+        <a className="skip-link" href="#conteudo">
+          Pular para o conteúdo
+        </a>
         {children}
       </body>
     </html>

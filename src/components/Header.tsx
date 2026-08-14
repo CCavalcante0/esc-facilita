@@ -16,18 +16,22 @@ interface NavItem {
 }
 
 const NAV: Record<Variant, { logoHref: string; items: NavItem[] }> = {
+  // Âncoras absolutas ("/#x", não "#x"): este menu também é renderizado em
+  // /escola e /escola/[slug], onde a âncora relativa não existe e o link
+  // morre. Na home continua sendo a mesma rota — o template não remonta e o
+  // wipe de transição não dispara (ver src/app/template.tsx).
   b2c: {
-    logoHref: "#topo",
+    logoHref: "/#topo",
     items: [
-      { href: "#produtos", label: "Crédito" },
-      { href: "#como-funciona", label: "Como funciona" },
-      { href: "#comprovacao", label: "Comprovação de renda" },
-      { href: "#escola", label: "Escola Facilita" },
-      { href: "#faq", label: "Dúvidas" },
+      { href: "/#produtos", label: "Crédito" },
+      { href: "/#como-funciona", label: "Como funciona" },
+      { href: "/#comprovacao", label: "Comprovação de renda" },
+      { href: "/escola", label: "Escola Facilita" },
+      { href: "/#faq", label: "Dúvidas" },
       { href: "/noticias", label: "Notícias" },
       { href: "/para-operadores", label: "Torne-se uma ESC" },
       {
-        href: "#lead",
+        href: "/#lead",
         label: "Área do cliente",
         className: "btn btn-borda",
         style: { padding: "9px 20px" },

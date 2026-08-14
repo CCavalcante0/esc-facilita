@@ -11,11 +11,13 @@ const DADOS: Record<
   b2c: {
     descricao:
       "Empresa Simples de Crédito. Empréstimo, financiamento e antecipação de recebíveis para quem empreende na nossa região.",
+    // Âncoras absolutas: este rodapé também aparece em /escola e
+    // /escola/[slug]. Mesma razão do Header.
     nav: [
-      { href: "#produtos", label: "Linhas de crédito" },
-      { href: "#como-funciona", label: "Como funciona" },
-      { href: "#escola", label: "Escola Facilita" },
-      { href: "#lead", label: "Área do cliente" },
+      { href: "/#produtos", label: "Linhas de crédito" },
+      { href: "/#como-funciona", label: "Como funciona" },
+      { href: "/escola", label: "Escola Facilita" },
+      { href: "/#lead", label: "Área do cliente" },
       { href: "/para-operadores", label: "Torne-se uma ESC" },
     ],
     legal:
@@ -71,7 +73,14 @@ export function Footer({ variant }: { variant: Variant }) {
             </ul>
           </div>
         </div>
-        <div className="foot-legal">{legal}</div>
+        <div className="foot-legal">
+          {legal}
+          {/* Documento legal junto do aviso legal, e não na navegação: aparece
+              em toda página independente da variante do rodapé. */}
+          <p className="foot-docs">
+            <Link href="/privacidade">Política de Privacidade</Link>
+          </p>
+        </div>
       </div>
     </footer>
   );
