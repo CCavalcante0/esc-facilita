@@ -10,14 +10,20 @@ export const revalidate = 60;
 type Params = { slug: string };
 
 async function buscarNoticia(slug: string) {
-  const supabase = createServerSupabase();
-  const { data } = await supabase
-    .from("noticias")
-    .select("titulo, resumo, conteudo, capa_url, publicada_em")
-    .eq("slug", slug)
-    .eq("publicada", true)
-    .maybeSingle();
-  return data;
+  // Falha de leitura (Supabase indisponível ou não configurado) vira "não
+  // encontrada" em vez de erro 500: quem chama já trata o null.
+  try {
+    const supabase = createServerSupabase();
+    const { data } = await supabase
+      .from("noticias")
+      .select("titulo, resumo, conteudo, capa_url, publicada_em")
+      .eq("slug", slug)
+      .eq("publicada", true)
+      .maybeSingle();
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
