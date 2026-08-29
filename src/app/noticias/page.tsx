@@ -29,7 +29,7 @@ function formatarData(iso: string | null): string {
   });
 }
 
-export default async function NoticiasPage() {
+async function buscarNoticias() {
   const supabase = createServerSupabase();
   // RLS (policy anon) já restringe a publicadas; o filtro deixa a intenção clara.
   const { data } = await supabase
@@ -38,8 +38,19 @@ export default async function NoticiasPage() {
     .eq("publicada", true)
     .order("publicada_em", { ascending: false })
     .limit(60);
+  return data ?? [];
+}
 
-  const noticias = data ?? [];
+export default async function NoticiasPage() {
+  // Esta página é prerenderizada no build. Uma falha aqui (Supabase fora do ar,
+  // ou variáveis de ambiente ausentes no ambiente de build) derrubava o build
+  // inteiro; agora ela cai no estado vazio, que a página já sabe renderizar.
+  let noticias: Awaited<ReturnType<typeof buscarNoticias>> = [];
+  try {
+    noticias = await buscarNoticias();
+  } catch {
+    noticias = [];
+  }
 
   return (
     <div className="page-b2c">
