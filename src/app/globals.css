@@ -128,7 +128,11 @@ header.encolhido .nav { height: 62px; }
 .nav > a { display: flex; align-items: center; min-height: 44px; }
 .logo-svg { height: 42px; width: auto; display: block; transition: height 0.25s ease; }
 header.encolhido .logo-svg { height: 36px; }
-.nav-links { display: flex; gap: 26px; align-items: center; list-style: none; }
+.nav-links { display: flex; gap: 18px; align-items: center; list-style: none; }
+/* Preventivo: com 8 itens a nav já ocupa todo o espaço ao lado da logo, então
+   uma quebra dentro de um rótulo ("Como / funciona") jogaria a lista por cima
+   dela. Hoje nenhum item quebra — isto impede que um 9º item cause isso. */
+.nav-links > li > a { white-space: nowrap; }
 .nav-links a { text-decoration: none; font-size: 0.92rem; font-weight: 500; color: var(--cinza); }
 /* Alvo de toque de 44px nos links de texto do menu (WCAG target-size), sem afetar os botões */
 .nav-links a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; }
@@ -392,6 +396,15 @@ footer { background: var(--profundo); color: rgba(255, 255, 255, 0.72); padding:
 .foot-legal { border-top: 1px solid rgba(255, 255, 255, 0.14); padding-top: 24px; font-size: 0.78rem; color: rgba(255, 255, 255, 0.72); line-height: 1.7; }
 
 /* ===== Mobile ===== */
+/* O menu B2C ganhou um 8º item ("Notícias") e, abaixo de ~1070px, a lista
+   encosta na logo. Nessa faixa ela recolhe para o mesmo menu do mobile em vez
+   de espremer os links — as declarações abaixo repetem as do bloco de 900px. */
+@media (max-width: 1070px) {
+  .nav-links { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--offwhite); flex-direction: column; padding: 20px; border-bottom: 1px solid var(--linha); gap: 18px; }
+  .nav-links.aberto { display: flex; }
+  .menu-btn { display: block; }
+}
+
 @media (max-width: 900px) {
   .hero-grid, .faixa-grid, .flex-grid { grid-template-columns: 1fr; gap: 40px; }
   .esc-grid, .obj-grid, .trans-grid { grid-template-columns: 1fr; gap: 24px; }
