@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { caminhoInternoSeguro } from "@/lib/redirect-seguro";
 import { createAuthServerClient } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/config";
 
@@ -27,8 +28,8 @@ export async function signIn(formData: FormData): Promise<AuthResult> {
     .eq("id", data.user.id)
     .maybeSingle();
 
-  const destino = proximo || (perfil?.role === "operador" ? "/admin" : "/painel");
-  redirect(destino);
+  const padrao = perfil?.role === "operador" ? "/admin" : "/painel";
+  redirect(proximo ? caminhoInternoSeguro(proximo, padrao) : padrao);
 }
 
 export async function signOut() {
