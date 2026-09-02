@@ -11,10 +11,19 @@
 -- Verificado antes da correção: um usuário com role='cliente' apagou todas as
 -- linhas de `noticias` em uma única chamada.
 
+-- Nomes antigos, da 0002.
 drop policy if exists "auth_read_noticias"   on public.noticias;
 drop policy if exists "auth_insert_noticias" on public.noticias;
 drop policy if exists "auth_update_noticias" on public.noticias;
 drop policy if exists "auth_delete_noticias" on public.noticias;
+
+-- E os nomes novos, para que rodar este arquivo duas vezes não estoure com
+-- "42710: policy already exists". Migration tem que ser idempotente: quem
+-- aplica à mão nem sempre sabe se já rodou.
+drop policy if exists "noticias_select_publicadas_ou_operador" on public.noticias;
+drop policy if exists "noticias_insert_operador"               on public.noticias;
+drop policy if exists "noticias_update_operador"               on public.noticias;
+drop policy if exists "noticias_delete_operador"               on public.noticias;
 
 -- Leitura: o operador enxerga rascunhos; qualquer outro autenticado (cliente)
 -- vê o mesmo que o público — só o que está publicado.
