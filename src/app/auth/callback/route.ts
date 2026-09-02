@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAuthServerClient } from "@/lib/supabase/server";
+import { caminhoInternoSeguro } from "@/lib/redirect-seguro";
 
 /**
  * Destino do link de e-mail (recuperação de senha, convite). Troca o `code`
@@ -8,7 +9,9 @@ import { createAuthServerClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/painel";
+  // Mesma proteção do login: `next` é entrada do usuário e o redirect acontece
+  // DEPOIS de a sessão ser gravada nos cookies.
+  const next = caminhoInternoSeguro(searchParams.get("next") ?? "/painel", "/painel");
 
   if (code) {
     const supabase = await createAuthServerClient();

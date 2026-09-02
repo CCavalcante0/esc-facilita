@@ -13,8 +13,34 @@ function onlyDigits(v: string): string {
   return v.replace(/\D/g, "");
 }
 
+/**
+ * Converte o que o operador digitou em número, aceitando as duas notações que
+ * ele pode usar sem pensar: "4.280,00" (pt-BR) e "4280.00".
+ *
+ * A versão anterior removia TODO ponto como separador de milhar, então
+ * "4280.00" virava 428000 — um contrato de R$ 4.280 gravado como R$ 428.000,
+ * e uma taxa de "2.5" gravada como 25% ao mês.
+ *
+ * Regra:
+ *   - tem vírgula  -> vírgula é o decimal, pontos são milhar ("1.234,56")
+ *   - só pontos, mais de um -> todos são milhar ("1.234.567")
+ *   - um ponto só, com 3 dígitos depois -> milhar, pela convenção pt-BR ("4.280")
+ *   - um ponto só, nos demais casos -> decimal ("4280.00", "2.5")
+ */
 function toNumber(v: string): number {
-  return Number(v.replace(/\./g, "").replace(",", "."));
+  const s = v.trim().replace(/\s/g, "");
+  if (!s) return NaN;
+
+  if (s.includes(",")) {
+    return Number(s.replace(/\./g, "").replace(",", "."));
+  }
+
+  const pontos = s.split(".").length - 1;
+  if (pontos === 0) return Number(s);
+  if (pontos > 1) return Number(s.replace(/\./g, ""));
+
+  const decimais = s.length - s.indexOf(".") - 1;
+  return Number(decimais === 3 ? s.replace(".", "") : s);
 }
 
 /**
@@ -95,6 +121,9 @@ export async function criarContrato(formData: FormData): Promise<ActionResult> {
   if (!numero) return { ok: false, error: "Informe o número do contrato." };
   if (!Number.isFinite(saldo) || saldo <= 0) {
     return { ok: false, error: "Informe um saldo devedor válido." };
+  }
+  if (taxa !== null && (!Number.isFinite(taxa) || taxa < 0)) {
+    return { ok: false, error: "Informe uma taxa de juros válida." };
   }
 
   const supabase = await createAuthServerClient();
