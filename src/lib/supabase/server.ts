@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/database.types";
+import { envSupabase } from "@/lib/supabase/env";
 
 /**
  * Client Supabase para uso exclusivo no servidor (server actions).
@@ -27,9 +28,10 @@ export function createServerSupabase() {
  */
 export async function createAuthServerClient() {
   const cookieStore = await cookies();
+  const { url, key } = envSupabase();
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
