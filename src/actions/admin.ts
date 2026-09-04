@@ -173,7 +173,11 @@ export async function criarParcela(formData: FormData): Promise<ActionResult> {
   });
 
   if (error) return { ok: false, error: "Não foi possível lançar a parcela." };
+  // O contrato aparece nas duas pontas: revalidar só a tela do operador deixava
+  // o painel do cliente servindo o valor velho depois da baixa da parcela.
   revalidatePath(`/admin/contratos/${contratoId}`);
+  revalidatePath(`/painel/${contratoId}`);
+  revalidatePath("/painel");
   return { ok: true };
 }
 
@@ -193,6 +197,10 @@ export async function atualizarParcelaStatus(formData: FormData): Promise<Action
     .eq("id", parcelaId);
 
   if (error) return { ok: false, error: "Não foi possível atualizar a parcela." };
+  // O contrato aparece nas duas pontas: revalidar só a tela do operador deixava
+  // o painel do cliente servindo o valor velho depois da baixa da parcela.
   revalidatePath(`/admin/contratos/${contratoId}`);
+  revalidatePath(`/painel/${contratoId}`);
+  revalidatePath("/painel");
   return { ok: true };
 }

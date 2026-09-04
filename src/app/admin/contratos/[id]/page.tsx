@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createAuthServerClient } from "@/lib/supabase/server";
+import { formatData, statusEfetivo } from "@/lib/parcelas";
 import { NovaParcelaForm } from "@/components/admin/NovaParcelaForm";
 import { ParcelaAcoes } from "@/components/admin/ParcelaAcoes";
 
@@ -9,11 +10,6 @@ export const metadata: Metadata = { title: "Contrato" };
 
 function formatBRL(v: number): string {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-function formatData(iso: string): string {
-  const [ano, mes, dia] = iso.split("-");
-  return `${dia}/${mes}/${ano}`;
 }
 
 interface Props {
@@ -83,7 +79,17 @@ export default async function ContratoAdminPage({ params }: Props) {
                 <tr key={p.id}>
                   <td>{String(p.numero).padStart(2, "0")}</td>
                   <td>{formatBRL(p.valor)}</td>
-                  <td>{formatData(p.vencimento)}</td>
+                  <td>
+                    {formatData(p.vencimento)}
+                    {statusEfetivo(p.status, p.vencimento) === "atraso" &&
+                      p.status !== "atraso" && (
+                        // Vencida e ainda não marcada: o cliente já a vê como
+                        // em atraso, então o operador precisa ver também.
+                        <span className="tag tag-atraso" style={{ marginLeft: 8 }}>
+                          vencida
+                        </span>
+                      )}
+                  </td>
                   <td>
                     <ParcelaAcoes parcelaId={p.id} contratoId={id} statusAtual={p.status} />
                   </td>

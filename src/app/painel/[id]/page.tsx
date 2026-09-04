@@ -1,17 +1,13 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createAuthServerClient } from "@/lib/supabase/server";
+import { formatData, statusEfetivo } from "@/lib/parcelas";
 import { waLink } from "@/lib/config";
 
 export const metadata: Metadata = { title: "Meu contrato" };
 
 function formatBRL(v: number): string {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-function formatData(iso: string): string {
-  const [, mes, dia] = iso.split("-");
-  return `${dia}/${mes}`;
 }
 
 const STATUS_PARCELA: Record<string, { classe: string; texto: string }> = {
@@ -46,7 +42,7 @@ export default async function ContratoDetalhePage({ params }: Props) {
 
   const { data: parcelas } = await supabase
     .from("parcelas")
-    .select("id, numero, valor, vencimento, status")
+    .select("id, numero, valor, vencimento, status, pago_em")
     .eq("contrato_id", id)
     .order("numero", { ascending: true });
 
@@ -83,7 +79,10 @@ export default async function ContratoDetalhePage({ params }: Props) {
           </p>
         ) : (
           (parcelas ?? []).map((p, i, arr) => {
-            const tag = STATUS_PARCELA[p.status] ?? STATUS_PARCELA.aberto;
+            // Deriva o atraso pela data: uma parcela vencida que o operador ainda
+            // não marcou aparecia para o cliente como se estivesse em dia.
+            const efetivo = statusEfetivo(p.status, p.vencimento);
+            const tag = STATUS_PARCELA[efetivo] ?? STATUS_PARCELA.aberto;
             return (
               <div
                 key={p.id}
@@ -96,7 +95,9 @@ export default async function ContratoDetalhePage({ params }: Props) {
                     {contrato.prazo_meses ? `/${contrato.prazo_meses}` : ""}
                   </span>
                   <span className="p-data">
-                    {p.status === "paga" ? "Paga em" : "Vence"} {formatData(p.vencimento)}
+                    {p.status === "paga"
+                      ? `Paga em ${formatData((p.pago_em ?? p.vencimento).slice(0, 10))}`
+                      : `Vence ${formatData(p.vencimento)}`}
                   </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
